@@ -1,0 +1,612 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ page_title }} | ABS ART
+{% endblock %}
+
+{% block content %}
+
+<style>
+.work-form-page{
+    max-width:920px;
+    margin:0 auto;
+}
+
+.work-form-header{
+    margin-bottom:22px;
+}
+
+.work-form-header h1{
+    margin:0 0 7px;
+    font-size:26px;
+    line-height:1.5;
+}
+
+.work-form-header p{
+    margin:0;
+    color:#8f9baa;
+    font-size:13px;
+    line-height:1.8;
+}
+
+.work-form{
+    background:#0a1119;
+    border:1px solid #182638;
+    border-radius:15px;
+    padding:24px;
+}
+
+.form-section{
+    margin-bottom:25px;
+}
+
+.form-section:last-of-type{
+    margin-bottom:0;
+}
+
+.form-section-title{
+    margin:0 0 15px;
+    padding-bottom:10px;
+    border-bottom:1px solid #172333;
+    font-size:15px;
+    font-weight:800;
+    color:#e9f0f7;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+
+.form-group{
+    min-width:0;
+    margin-bottom:18px;
+}
+
+.form-grid .form-group{
+    margin-bottom:0;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-size:13px;
+    font-weight:700;
+    color:#dce5ee;
+}
+
+.form-input{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 13px;
+    border:1px solid #253446;
+    border-radius:9px;
+    background:#070c12;
+    color:#fff;
+    font-family:inherit;
+    font-size:14px;
+    outline:none;
+    transition:border-color .2s ease,background .2s ease;
+}
+
+.form-input:focus{
+    border-color:#2869bd;
+    background:#09101a;
+}
+
+textarea.form-input{
+    resize:vertical;
+    min-height:130px;
+    line-height:1.9;
+}
+
+select.form-input{
+    cursor:pointer;
+}
+
+input[type="datetime-local"].form-input{
+    direction:ltr;
+    text-align:left;
+}
+
+.form-help{
+    margin-top:7px;
+    color:#707d8d;
+    font-size:11px;
+    line-height:1.8;
+}
+
+.error-list{
+    margin-top:7px;
+    padding:8px 10px;
+    border-radius:7px;
+    background:#35191d;
+    color:#ff9999;
+    font-size:12px;
+    line-height:1.8;
+}
+
+.form-error-summary{
+    margin-bottom:20px;
+    padding:12px 14px;
+    border:1px solid #5a2929;
+    border-radius:9px;
+    background:#32171b;
+    color:#ff9b9b;
+    font-size:13px;
+    line-height:1.9;
+}
+
+.image-upload-box{
+    padding:16px;
+    border:1px dashed #29405a;
+    border-radius:11px;
+    background:#080e15;
+}
+
+.image-upload-box .form-group{
+    margin-bottom:0;
+}
+
+.current-image-box{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid #182638;
+}
+
+.current-image-title{
+    display:block;
+    margin-bottom:9px;
+    color:#aebbc9;
+    font-size:12px;
+    font-weight:700;
+}
+
+.current-image{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:180px;
+    padding:10px;
+    border-radius:10px;
+    background:#05080d;
+    overflow:hidden;
+}
+
+.current-image img{
+    display:block;
+    max-width:100%;
+    max-height:280px;
+    width:auto;
+    height:auto;
+    object-fit:contain;
+    border-radius:7px;
+}
+
+.checkbox-box{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:13px 14px;
+    border:1px solid #1d2c3e;
+    border-radius:9px;
+    background:#070c12;
+}
+
+.form-checkbox{
+    width:18px;
+    height:18px;
+    margin:0;
+    accent-color:#0047ab;
+}
+
+.checkbox-box label{
+    margin:0;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.checkbox-help{
+    margin-top:7px;
+    color:#707d8d;
+    font-size:11px;
+    line-height:1.7;
+}
+
+.form-actions{
+    display:flex;
+    gap:10px;
+    margin-top:26px;
+    padding-top:20px;
+    border-top:1px solid #182638;
+}
+
+.submit-button,
+.cancel-button{
+    flex:1;
+    min-height:46px;
+    padding:11px 16px;
+    border-radius:9px;
+    text-align:center;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    text-decoration:none;
+    box-sizing:border-box;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s ease;
+}
+
+.submit-button{
+    border:0;
+    background:#0047ab;
+    color:#fff;
+}
+
+.submit-button:hover{
+    background:#0759c8;
+    transform:translateY(-1px);
+}
+
+.cancel-button{
+    border:1px solid #253446;
+    background:#111a24;
+    color:#dce5ee;
+}
+
+.cancel-button:hover{
+    background:#172333;
+}
+
+@media(max-width:700px){
+
+    .work-form{
+        padding:17px;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+        gap:0;
+    }
+
+    .form-grid .form-group{
+        margin-bottom:18px;
+    }
+
+    .work-form-header h1{
+        font-size:22px;
+    }
+
+    .form-actions{
+        flex-direction:column;
+    }
+
+}
+
+@media(max-width:430px){
+
+    .work-form-page{
+        width:100%;
+    }
+
+    .work-form{
+        padding:14px;
+        border-radius:12px;
+    }
+
+    .work-form-header h1{
+        font-size:20px;
+    }
+
+    .form-input{
+        padding:11px 12px;
+        font-size:13px;
+    }
+
+    .submit-button,
+    .cancel-button{
+        min-height:44px;
+    }
+
+}
+</style>
+
+
+<div class="work-form-page">
+
+    <div class="work-form-header">
+
+        <h1>{{ page_title }}</h1>
+
+        <p>
+            اطلاعات طرح را وارد کنید و سپس آن را ذخیره کنید.
+        </p>
+
+    </div>
+
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        class="work-form"
+    >
+
+        {% csrf_token %}
+
+
+        {% if form.non_field_errors %}
+
+            <div class="form-error-summary">
+
+                {% for error in form.non_field_errors %}
+                    {{ error }}{% if not forloop.last %}<br>{% endif %}
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- اطلاعات اصلی -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">
+                اطلاعات اصلی طرح
+            </h2>
+
+
+            <div class="form-group">
+
+                {{ form.title.label_tag }}
+
+                {{ form.title }}
+
+                {% if form.title.errors %}
+
+                    <div class="error-list">
+                        {% for error in form.title.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+
+                {{ form.description.label_tag }}
+
+                {{ form.description }}
+
+                {% if form.description.errors %}
+
+                    <div class="error-list">
+                        {% for error in form.description.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+
+                {{ form.for_whom.label_tag }}
+
+                {{ form.for_whom }}
+
+                {% if form.for_whom.errors %}
+
+                    <div class="error-list">
+                        {% for error in form.for_whom.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- تصویر -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">
+                تصویر طرح
+            </h2>
+
+
+            <div class="image-upload-box">
+
+                <div class="form-group">
+
+                    {{ form.image.label_tag }}
+
+                    {{ form.image }}
+
+                    <div class="form-help">
+                        تصویر اصلی طرح را انتخاب کنید. نسبت واقعی تصویر حفظ می‌شود.
+                    </div>
+
+                    {% if form.image.errors %}
+
+                        <div class="error-list">
+                            {% for error in form.image.errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                {% if work and work.image %}
+
+                    <div class="current-image-box">
+
+                        <span class="current-image-title">
+                            تصویر فعلی
+                        </span>
+
+                        <div class="current-image">
+
+                            <img
+                                src="{{ work.image.url }}"
+                                alt="{{ work.title }}"
+                            >
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- انتشار -->
+
+        <section class="form-section">
+
+            <h2 class="form-section-title">
+                انتشار و دسته‌بندی
+            </h2>
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    {{ form.folder.label_tag }}
+
+                    {{ form.folder }}
+
+                    {% if form.folder.errors %}
+
+                        <div class="error-list">
+                            {% for error in form.folder.errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="form-group">
+
+                    {{ form.status.label_tag }}
+
+                    {{ form.status }}
+
+                    {% if form.status.errors %}
+
+                        <div class="error-list">
+                            {% for error in form.status.errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="form-group">
+
+                    {{ form.published_at.label_tag }}
+
+                    {{ form.published_at }}
+
+                    <div class="form-help">
+                        تاریخ و ساعت انتشار طرح را مشخص کنید.
+                    </div>
+
+                    {% if form.published_at.errors %}
+
+                        <div class="error-list">
+                            {% for error in form.published_at.errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <div class="checkbox-box">
+
+                    {{ form.is_showcase }}
+
+                    <label for="{{ form.is_showcase.id_for_label }}">
+                        قرار دادن در ویترین منتخب
+                    </label>
+
+                </div>
+
+                <div class="checkbox-help">
+                    این گزینه فقط ویترین عمومی را کنترل می‌کند و کاربران عادی امکان تغییر آن را ندارند.
+                </div>
+
+                {% if form.is_showcase.errors %}
+
+                    <div class="error-list">
+
+                        {% for error in form.is_showcase.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="submit-button"
+            >
+                {{ submit_text }}
+            </button>
+
+
+            <a
+                href="{% url 'panel_work_list' %}"
+                class="cancel-button"
+            >
+                انصراف
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

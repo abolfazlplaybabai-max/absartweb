@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}آرشیو هوشمند | ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+.archive-page{
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.archive-head{
+    margin-bottom:22px;
+}
+
+.archive-head h1{
+    margin:0 0 7px;
+    font-size:25px;
+}
+
+.archive-head p{
+    margin:0;
+    color:#8996a5;
+    font-size:13px;
+}
+
+.archive-filters{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 190px auto;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.archive-input,
+.archive-select{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px;
+    border:1px solid #223247;
+    border-radius:9px;
+    background:#0a1119;
+    color:#fff;
+    font-family:inherit;
+}
+
+.archive-filter-button{
+    border:0;
+    border-radius:9px;
+    background:#173b69;
+    color:#fff;
+    padding:12px 20px;
+    font-family:inherit;
+    cursor:pointer;
+}
+
+.archive-list{
+    display:grid;
+    gap:11px;
+}
+
+.archive-card{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:15px;
+    align-items:center;
+    padding:15px;
+    background:#0a1119;
+    border:1px solid #182638;
+    border-radius:12px;
+}
+
+.archive-card h2{
+    margin:0 0 8px;
+    font-size:16px;
+}
+
+.archive-meta{
+    color:#8996a5;
+    font-size:12px;
+    line-height:1.9;
+}
+
+.archive-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    justify-content:flex-end;
+}
+
+.archive-actions a,
+.archive-actions button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:36px;
+    padding:7px 12px;
+    border-radius:8px;
+    border:0;
+    font-family:inherit;
+    font-size:12px;
+    text-decoration:none;
+    cursor:pointer;
+    box-sizing:border-box;
+}
+
+.archive-edit{
+    background:#173b69;
+    color:#fff;
+}
+
+.archive-trash{
+    background:#3b1c1c;
+    color:#ef9999;
+}
+
+.archive-restore{
+    background:#173b69;
+    color:#fff;
+}
+
+.archive-delete{
+    background:#451b1b;
+    color:#ff9999;
+}
+
+.archive-actions form{
+    margin:0;
+}
+
+.archive-empty{
+    text-align:center;
+    padding:55px 20px;
+    background:#0a1119;
+    border:1px solid #182638;
+    border-radius:12px;
+    color:#8996a5;
+}
+
+@media(max-width:700px){
+    .archive-filters{
+        grid-template-columns:1fr;
+    }
+
+    .archive-card{
+        grid-template-columns:1fr;
+    }
+
+    .archive-actions{
+        justify-content:stretch;
+    }
+
+    .archive-actions a,
+    .archive-actions button{
+        flex:1;
+    }
+}
+
+/* SMART ARCHIVE FINAL */
+
+.archive-filters {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 170px 190px auto;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.archive-input,
+.archive-select {
+    min-width:0;
+}
+
+.archive-filter-button {
+    min-width:90px;
+    font-weight:700;
+    transition:.2s ease;
+}
+
+.archive-filter-button:hover {
+    background:#214d83;
+    transform:translateY(-1px);
+}
+
+@media(max-width:900px) {
+    .archive-filters {
+        grid-template-columns:minmax(0,1fr) 1fr;
+    }
+
+    .archive-filter-button {
+        width:100%;
+    }
+}
+
+@media(max-width:700px) {
+    .archive-filters {
+        grid-template-columns:1fr;
+    }
+}
+
+</style>
+
+<section class="archive-page">
+
+    <div class="archive-head">
+        <h1>آرشیو هوشمند</h1>
+        <p>تمام وضعیت‌های طرح را از یکجا جستجو و مدیریت کنید.</p>
+    </div>
+
+    <form method="get" class="archive-filters">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ search }}"
+            class="archive-input"
+            placeholder="جستجوی عنوان، توضیحات، مخاطب یا پوشه"
+        >
+
+        <select name="status" class="archive-select">
+
+            <option value="">
+                همه وضعیت‌ها
+            </option>
+
+            <option value="active" {% if status == "active" %}selected{% endif %}>
+                فعال
+            </option>
+
+            <option value="draft" {% if status == "draft" %}selected{% endif %}>
+                پیش‌نویس
+            </option>
+
+            <option value="inactive" {% if status == "inactive" %}selected{% endif %}>
+                غیرفعال
+            </option>
+
+            <option value="trash" {% if status == "trash" %}selected{% endif %}>
+                سطل بازیابی
+            </option>
+
+        </select>
+
+        <select name="sort" class="archive-select">
+
+            <option value="-published_at" {% if sort == "-published_at" %}selected{% endif %}>
+                جدیدترین انتشار
+            </option>
+
+            <option value="published_at" {% if sort == "published_at" %}selected{% endif %}>
+                قدیمی‌ترین انتشار
+            </option>
+
+            <option value="-updated_at" {% if sort == "-updated_at" %}selected{% endif %}>
+                آخرین ویرایش
+            </option>
+
+            <option value="updated_at" {% if sort == "updated_at" %}selected{% endif %}>
+                قدیمی‌ترین ویرایش
+            </option>
+
+            <option value="title" {% if sort == "title" %}selected{% endif %}>
+                عنوان: الف تا ی
+            </option>
+
+            <option value="-title" {% if sort == "-title" %}selected{% endif %}>
+                عنوان: ی تا الف
+            </option>
+
+        </select>
+
+        <button type="submit" class="archive-filter-button">
+            اعمال
+        </button>
+
+    </form>
+
+    {% if works %}
+
+        <div class="archive-list">
+
+            {% for work in works %}
+
+                <div class="archive-card">
+
+                    <div>
+
+                        <h2>{{ work.title }}</h2>
+
+                        <div class="archive-meta">
+
+                            وضعیت:
+                            {{ work.get_status_display }}
+
+                            <br>
+
+                            پوشه:
+                            {% if work.folder %}
+                                {{ work.folder.name }}
+                            {% else %}
+                                بدون پوشه
+                            {% endif %}
+
+                            <br>
+
+                            انتشار:
+                            {{ work.published_at|date:"Y/m/d - H:i" }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="archive-actions">
+
+                        <a
+                            href="{% url 'panel_work_edit' work.pk %}"
+                            class="archive-edit"
+                        >
+                            ویرایش
+                        </a>
+
+                        {% if work.status != "trash" %}
+
+                            <form
+                                method="post"
+                                action="{% url 'panel_work_trash' work.pk %}"
+                                onsubmit="return confirm('این طرح به سطل بازیابی منتقل شود؟');"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="archive-trash"
+                                >
+                                    انتقال به سطل
+                                </button>
+
+                            </form>
+
+                        {% else %}
+
+                            <form
+                                method="post"
+                                action="{% url 'panel_work_restore' work.pk %}"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="archive-restore"
+                                >
+                                    بازیابی
+                                </button>
+
+                            </form>
+
+                            <form
+                                method="post"
+                                action="{% url 'panel_work_delete_permanently' work.pk %}"
+                                onsubmit="return confirm('این طرح برای همیشه حذف شود؟ این عملیات قابل بازگشت نیست.');"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="archive-delete"
+                                >
+                                    حذف دائمی
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="archive-empty">
+            موردی با این مشخصات پیدا نشد.
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

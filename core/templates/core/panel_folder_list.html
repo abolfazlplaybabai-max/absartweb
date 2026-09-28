@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}پوشه‌ها | ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+.folder-panel {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+}
+
+.folder-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.folder-panel-head h1 {
+    margin: 0 0 7px;
+    font-size: 25px;
+}
+
+.folder-panel-head p {
+    margin: 0;
+    color: #8f9aaa;
+    font-size: 13px;
+}
+
+.folder-add {
+    display: inline-block;
+    text-decoration: none;
+    color: #fff;
+    background: #124b91;
+    border: 1px solid #2467b8;
+    padding: 11px 16px;
+    border-radius: 11px;
+    font-size: 13px;
+}
+
+.folder-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.folder-card {
+    overflow: hidden;
+    background: #0b1220;
+    border: 1px solid #17243a;
+    border-radius: 16px;
+}
+
+.folder-cover {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #07101d;
+    overflow: hidden;
+}
+
+.folder-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.folder-no-cover {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #52647d;
+    font-size: 14px;
+}
+
+.folder-info {
+    padding: 16px;
+}
+
+.folder-info h2 {
+    margin: 0 0 7px;
+    font-size: 17px;
+}
+
+.folder-count {
+    color: #8f9aaa;
+    font-size: 13px;
+}
+
+.folder-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.folder-action {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    padding: 9px;
+    border-radius: 9px;
+    border: 1px solid #1b2a42;
+    color: #dce5f2;
+    background: #0e1727;
+    font-size: 12px;
+}
+
+.folder-delete {
+    flex: 1;
+}
+
+.folder-delete button {
+    width: 100%;
+    padding: 9px;
+    border-radius: 9px;
+    border: 1px solid #3b2028;
+    color: #e7b8c0;
+    background: #171016;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.folder-empty {
+    text-align: center;
+    padding: 60px 20px;
+    border: 1px dashed #1c2b41;
+    border-radius: 16px;
+    color: #78879b;
+}
+
+@media (max-width: 700px) {
+
+    .folder-panel-head {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .folder-add {
+        text-align: center;
+    }
+
+    .folder-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<section class="folder-panel">
+
+    <div class="folder-panel-head">
+
+        <div>
+            <h1>پوشه‌ها</h1>
+            <p>مدیریت دسته‌بندی و پوشه‌های طرح‌ها</p>
+        </div>
+
+        <a
+            href="{% url 'panel_folder_create' %}"
+            class="folder-add"
+        >
+            + ساخت پوشه جدید
+        </a>
+
+    </div>
+
+    {% if folder_data %}
+
+        <div class="folder-grid">
+
+            {% for item in folder_data %}
+
+                <article class="folder-card">
+
+                    <div class="folder-cover">
+
+                        {% if item.folder.custom_cover %}
+
+                            <img
+                                src="{{ item.folder.custom_cover.url }}"
+                                alt="{{ item.folder.name }}"
+                            >
+
+                        {% elif item.latest_work and item.latest_work.image %}
+
+                            <img
+                                src="{{ item.latest_work.image.url }}"
+                                alt="{{ item.folder.name }}"
+                            >
+
+                        {% else %}
+
+                            <div class="folder-no-cover">
+                                بدون کاور
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="folder-info">
+
+                        <h2>{{ item.folder.name }}</h2>
+
+                        <div class="folder-count">
+                            {{ item.folder.work_count }} طرح فعال
+                        </div>
+
+                        <div class="folder-actions">
+
+                            <a
+                                href="{% url 'panel_folder_edit' item.folder.pk %}"
+                                class="folder-action"
+                            >
+                                ویرایش
+                            </a>
+
+                            <form
+                                method="post"
+                                action="{% url 'panel_folder_delete' item.folder.pk %}"
+                                class="folder-delete"
+                                onsubmit="return confirm('حذف این پوشه انجام شود؟ طرح‌های داخل پوشه حذف نمی‌شوند.');"
+                            >
+
+                                {% csrf_token %}
+
+                                <button type="submit">
+                                    حذف
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="folder-empty">
+            هنوز هیچ پوشه‌ای ساخته نشده است.
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
+

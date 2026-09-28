@@ -1,0 +1,15 @@
+{% if messages %}
+<div class="abs-messages" id="absMessages" aria-live="polite" aria-atomic="true">
+    {% for message in messages %}
+    <div class="abs-message abs-message-{{ message.tags|default:'info' }}">
+        <div class="abs-message-text">{{ message }}</div>
+        <button
+            type="button"
+            class="abs-message-close"
+            onclick="this.parentElement.remove()"
+            aria-label="بستن پیام"
+        >×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

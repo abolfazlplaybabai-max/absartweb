@@ -1,0 +1,20 @@
+venv/
+__pycache__/
+*.pyc
+db.sqlite3
+.env
+staticfiles/
+media/
+config/settings.py.broken-production
+*.log
+.DS_Store
+
+# Local backups and temporary test files
+*.backup
+*.like-backup
+*.before-like-ui
+install_error.txt
+panel_full_test.py
+panel_functional_test.py
+panel_real_test.py
+core/templates/base.html.backup_before_abs_visual

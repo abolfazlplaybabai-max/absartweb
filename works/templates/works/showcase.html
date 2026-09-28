@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}ویترین منتخب | ABS ART{% endblock %}
+
+{% block meta_description %}
+ویترین منتخب ABS ART؛ مجموعه‌ای از طرح‌های انتخاب‌شده و آثار گرافیکی.
+{% endblock %}
+
+{% block content %}
+
+<style>
+.public-showcase {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 16px 55px;
+}
+
+.public-showcase-head {
+    margin-bottom: 26px;
+}
+
+.public-showcase-head h1 {
+    margin: 0 0 9px;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 800;
+    letter-spacing: -.3px;
+}
+
+.public-showcase-head p {
+    margin: 0;
+    color: #8f9aaa;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.public-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.public-showcase-card {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 17px;
+    background: #0b1220;
+    border: 1px solid #17243a;
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.public-showcase-card:hover {
+    transform: translateY(-4px);
+    border-color: #29466d;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, .24);
+}
+
+.public-showcase-image {
+    position: relative;
+    display: block;
+    width: 100%;
+    background: #07101d;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.public-showcase-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform .35s ease;
+}
+
+.public-showcase-card:hover .public-showcase-image img {
+    transform: scale(1.018);
+}
+
+.public-showcase-new {
+    position: absolute;
+    top: 11px;
+    right: 11px;
+    z-index: 2;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #f0c400;
+    color: #101010;
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, .28);
+}
+
+.public-showcase-info {
+    padding: 15px 15px 16px;
+}
+
+.public-showcase-title {
+    margin: 0 0 8px;
+    color: #f2f5fa;
+    font-size: 15px;
+    line-height: 1.8;
+    font-weight: 750;
+}
+
+.public-showcase-description {
+    margin: 0 0 11px;
+    color: #8f9aaa;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.public-showcase-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px 12px;
+    color: #718096;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.public-showcase-meta-item {
+    display: inline-flex;
+    align-items: center;
+}
+
+.public-showcase-folder {
+    color: #91a4bd;
+}
+
+.public-showcase-for-whom {
+    color: #78879b;
+}
+
+.public-showcase-empty {
+    padding: 65px 20px;
+    text-align: center;
+    border: 1px dashed #1c2b41;
+    border-radius: 17px;
+    color: #78879b;
+    background: rgba(7, 16, 29, .45);
+}
+
+.public-showcase-empty-title {
+    margin: 0 0 8px;
+    color: #b6c0cf;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.public-showcase-empty-text {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+@media (max-width: 900px) {
+
+    .public-showcase-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .public-showcase {
+        padding: 22px 12px 42px;
+    }
+
+    .public-showcase-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .public-showcase-card {
+        border-radius: 15px;
+    }
+
+    .public-showcase-info {
+        padding: 13px 13px 14px;
+    }
+
+    .public-showcase-title {
+        font-size: 14px;
+    }
+}
+</style>
+
+<section class="public-showcase">
+
+    <header class="public-showcase-head">
+
+        <h1>ویترین منتخب</h1>
+
+        <p>
+            مجموعه‌ای از طرح‌های انتخاب‌شده ABS ART
+        </p>
+
+    </header>
+
+    {% if works %}
+
+        <section class="public-showcase-grid">
+
+            {% for work in works %}
+
+                <article class="public-showcase-card">
+
+                    <a
+                        href="{% url 'work_detail' work.pk %}"
+                        class="public-showcase-image"
+                        aria-label="مشاهده {{ work.title }}"
+                    >
+
+                        {% if work.is_new %}
+                            <span class="public-showcase-new">
+                                NEW
+                            </span>
+                        {% endif %}
+
+                        <img
+                            src="{{ work.image.url }}"
+                            alt="{{ work.title }}"
+                            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                        >
+
+                    </a>
+
+                    <div class="public-showcase-info">
+
+                        <h2 class="public-showcase-title">
+                            {{ work.title }}
+                        </h2>
+
+                        {% if work.description %}
+
+                            <p class="public-showcase-description">
+                                {{ work.description }}
+                            </p>
+
+                        {% endif %}
+
+                        <div class="public-showcase-meta">
+
+                            {% if work.folder %}
+
+                                <span class="public-showcase-meta-item public-showcase-folder">
+                                    {{ work.folder.name }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="public-showcase-meta-item">
+                                    بدون پوشه
+                                </span>
+
+                            {% endif %}
+
+                            {% if work.for_whom %}
+
+                                <span class="public-showcase-meta-item public-showcase-for-whom">
+                                    {{ work.for_whom }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </section>
+
+    {% else %}
+
+        <div class="public-showcase-empty">
+
+            <h2 class="public-showcase-empty-title">
+                ویترین منتخب هنوز خالی است
+            </h2>
+
+            <p class="public-showcase-empty-text">
+                هنوز طرحی برای نمایش در ویترین منتخب انتخاب نشده است.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

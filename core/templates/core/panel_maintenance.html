@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}حالت تعمیرات | ABS ART{% endblock %}
+
+{% block content %}
+
+<section style="max-width:700px;margin:auto;padding:24px 16px">
+
+<h1>حالت تعمیرات</h1>
+
+<div style="
+margin:25px 0;
+padding:22px;
+background:#0b1220;
+border:1px solid #17243a;
+border-radius:16px;
+">
+
+{% if site_settings.maintenance_mode %}
+
+<h2>فعال است</h2>
+
+<p style="color:#8f9aaa">
+بازدیدکنندگان عمومی در حال حاضر صفحه تعمیرات را می‌بینند.
+</p>
+
+{% else %}
+
+<h2>غیرفعال است</h2>
+
+<p style="color:#8f9aaa">
+سایت برای بازدیدکنندگان عمومی فعال است.
+</p>
+
+{% endif %}
+
+<form method="post">
+
+{% csrf_token %}
+
+<button
+type="submit"
+style="
+width:100%;
+padding:15px;
+border:0;
+border-radius:12px;
+background:#173f73;
+color:#fff;
+font-family:inherit;
+cursor:pointer;
+"
+>
+
+{% if site_settings.maintenance_mode %}
+غیرفعال کردن حالت تعمیرات
+{% else %}
+فعال کردن حالت تعمیرات
+{% endif %}
+
+</button>
+
+</form>
+
+</div>
+
+</section>
+
+{% endblock %}

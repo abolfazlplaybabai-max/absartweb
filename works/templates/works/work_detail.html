@@ -1,0 +1,1519 @@
+{% extends "base.html" %}
+{% load persian_date %}
+
+{% block title %}
+{{ work.title }} | ABS ART
+
+
+
+{% endblock %}
+
+{% block meta_description %}
+{% if work.description %}
+{{ work.description|striptags|truncatechars:155 }}
+{% elif work.for_whom %}
+طراحی {{ work.title }} برای {{ work.for_whom }} در مجموعه آثار ABS ART.
+{% else %}
+{{ work.title }}؛ یکی از آثار گرافیکی ABS ART.
+{% endif %}
+{% endblock %}
+
+{% block canonical_url %}
+{{ request.build_absolute_uri }}
+{% endblock %}
+
+{% block og_type %}
+article
+{% endblock %}
+
+{% block og_title %}
+{{ work.title }} | ABS ART
+{% endblock %}
+
+{% block og_description %}
+{% if work.description %}
+{{ work.description|striptags|truncatechars:155 }}
+{% elif work.for_whom %}
+طراحی {{ work.title }} برای {{ work.for_whom }} در مجموعه آثار ABS ART.
+{% else %}
+{{ work.title }}؛ یکی از آثار گرافیکی ABS ART.
+{% endif %}
+{% endblock %}
+
+{% block og_url %}
+{{ request.build_absolute_uri }}
+{% endblock %}
+
+{% block og_image %}
+<meta
+    property="og:image"
+    content="{{ request.scheme }}://{{ request.get_host }}{{ work.image.url }}"
+>
+{% endblock %}
+
+{% block twitter_title %}
+{{ work.title }} | ABS ART
+{% endblock %}
+
+{% block twitter_description %}
+{% if work.description %}
+{{ work.description|striptags|truncatechars:155 }}
+{% else %}
+{{ work.title }}؛ یکی از آثار گرافیکی ABS ART.
+{% endif %}
+{% endblock %}
+
+{% block twitter_image %}
+<meta
+    name="twitter:image"
+    content="{{ request.scheme }}://{{ request.get_host }}{{ work.image.url }}"
+>
+{% endblock %}
+
+{% block extra_head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "VisualArtwork",
+    "name": "{{ work.title|escapejs }}",
+    "url": "{{ request.build_absolute_uri|escapejs }}",
+    "image": "{{ request.scheme }}://{{ request.get_host }}{{ work.image.url|escapejs }}",
+    "description": "{% if work.description %}{{ work.description|striptags|truncatechars:300|escapejs }}{% else %}{{ work.title|escapejs }}؛ یکی از آثار گرافیکی ABS ART.{% endif %}",
+    "datePublished": "{{ work.published_at|date:'c' }}",
+    "dateModified": "{{ work.updated_at|date:'c' }}",
+    "creator": {
+        "@type": "Organization",
+        "name": "ABS ART"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "ABS ART"
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<style id="abs-like-ui-final">
+/* نوار Like و Share دقیقاً زیر تصویر */
+#absLikeForm {
+    width: 100% !important;
+    margin: 14px 0 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    direction: rtl !important;
+    gap: 14px !important;
+}
+
+/* خود Like */
+#absLikeButton {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    padding: 0 !important;
+
+    border: 1px solid rgba(255,255,255,.12) !important;
+    border-radius: 16px !important;
+
+    background: rgba(5,12,24,.88) !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    cursor: pointer !important;
+    transition:
+        transform .18s ease,
+        background .18s ease,
+        border-color .18s ease !important;
+}
+
+#absLikeButton:hover {
+    transform: scale(1.06);
+}
+
+#absLikeButton:active {
+    transform: scale(.94);
+}
+
+#absLikeButton span {
+    font-family: Arial, sans-serif !important;
+    font-size: 32px !important;
+    line-height: 1 !important;
+    color: #ffffff !important;
+}
+
+#absLikeButton.liked {
+    background: rgba(255,45,70,.10) !important;
+    border-color: rgba(255,45,70,.35) !important;
+}
+
+#absLikeButton.liked span {
+    color: #ff304f !important;
+}
+
+/* شمارنده */
+#absLikeCount {
+    min-width: 32px !important;
+
+    margin-right: -4px !important;
+
+    font-family: Arial, sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+
+    color: #ffffff !important;
+
+    text-align: center !important;
+    direction: ltr !important;
+}
+
+/* Share کنار Like */
+#absLikeShareButton {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    padding: 0 !important;
+
+    border: 1px solid rgba(255,255,255,.12) !important;
+    border-radius: 16px !important;
+
+    background: rgba(5,12,24,.88) !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    cursor: pointer !important;
+    color: #ffffff !important;
+
+    transition:
+        transform .18s ease,
+        background .18s ease !important;
+}
+
+#absLikeShareButton:hover {
+    transform: scale(1.06);
+}
+
+#absLikeShareButton:active {
+    transform: scale(.94);
+}
+
+#absLikeShareButton svg {
+    width: 29px !important;
+    height: 29px !important;
+}
+
+/* پیام لایک */
+#absLikeMessage {
+    position: absolute !important;
+    margin-top: 72px !important;
+    right: 0 !important;
+
+    width: max-content !important;
+    max-width: 90vw !important;
+
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #ff304f !important;
+
+    pointer-events: none !important;
+}
+
+/* کانتینر جدید */
+#absLikeBar {
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    direction: rtl !important;
+}
+</style>
+
+
+<style>
+    .work-page {
+        width: min(1100px, 94%);
+        margin: 0 auto;
+        padding-bottom: 60px;
+    }
+
+    /* =========================
+       BREADCRUMB
+       ========================= */
+
+    .breadcrumb {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 5px;
+        padding: 28px 0 20px;
+        color: #737f8c;
+        font-size: 12px;
+        line-height: 2;
+    }
+
+    .breadcrumb a {
+        color: #1685ff;
+        text-decoration: none;
+        transition: color .2s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #55a8ff;
+    }
+
+    .breadcrumb .separator {
+        color: #394656;
+        user-select: none;
+    }
+
+    .breadcrumb .current {
+        color: #b7c0ca;
+        overflow-wrap: anywhere;
+    }
+
+    /* =========================
+       TITLE
+       ========================= */
+
+    .title-area {
+        padding: 10px 0 30px;
+    }
+
+    .title-area h1 {
+        margin: 0;
+        color: #1685ff;
+        font-size: clamp(34px, 7vw, 64px);
+        line-height: 1.15;
+        font-weight: 900;
+        overflow-wrap: anywhere;
+    }
+
+    .new {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 15px;
+        padding: 5px 11px;
+        background: #1685ff;
+        color: #ffffff;
+        border-radius: 5px;
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+        font-weight: 900;
+        letter-spacing: 1px;
+    }
+
+    /* =========================
+       MAIN IMAGE
+       ========================= */
+
+    .main-image {
+        width: 100%;
+        overflow: hidden;
+        background: #020406;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 18px;
+    }
+
+    .main-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* =========================
+       CONTENT
+       ========================= */
+
+    .content {
+        padding: 32px 0;
+    }
+
+    .description {
+        color: #ffffff;
+        font-size: 16px;
+        line-height: 2.2;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .info {
+        min-width: 0;
+        padding: 18px;
+        background: #0a1018;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 13px;
+    }
+
+    .label {
+        display: block;
+        margin-bottom: 7px;
+        color: #687584;
+        font-size: 11px;
+    }
+
+    .value {
+        color: #ffffff;
+        font-size: 14px;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+    }
+
+    .value a {
+        color: #1685ff;
+        text-decoration: none;
+    }
+
+    .value a:hover {
+        color: #55a8ff;
+    }
+
+    /* =========================
+       ACTIONS
+       ========================= */
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .button {
+        min-height: 45px;
+        border: 1px solid rgba(22,133,255,.45);
+        background: #0a1018;
+        color: #ffffff;
+        border-radius: 9px;
+        padding: 11px 18px;
+        font-family: inherit;
+        font-size: 13px;
+        cursor: pointer;
+        transition:
+            background .2s ease,
+            border-color .2s ease,
+            transform .2s ease;
+    }
+
+    .button:hover {
+        background: #0e1927;
+        border-color: rgba(22,133,255,.8);
+    }
+
+    .button:active {
+        transform: scale(.98);
+    }
+
+    .button.primary {
+        background: #1685ff;
+        border-color: #1685ff;
+    }
+
+    .button.primary:hover {
+        background: #0878ed;
+        border-color: #0878ed;
+    }
+
+    .share-status {
+        min-height: 22px;
+        margin-top: 12px;
+        color: #6e7d8d;
+        font-size: 11px;
+        line-height: 1.8;
+        opacity: 0;
+        transition: opacity .2s ease;
+    }
+
+    .share-status.show {
+        opacity: 1;
+    }
+
+    .share-status.success {
+        color: #63b3ff;
+    }
+
+    .share-status.error {
+        color: #ff8585;
+    }
+
+    /* =========================
+       RELATED WORKS
+       ========================= */
+
+    .related {
+        margin-top: 45px;
+    }
+
+    .related h2 {
+        margin: 0 0 20px;
+        color: #1685ff;
+        font-size: 25px;
+        line-height: 1.5;
+    }
+
+    .related-subtitle {
+        margin: -10px 0 20px;
+        color: #687584;
+        font-size: 11px;
+    }
+
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .related-card {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        background: #0a1018;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 12px;
+        text-decoration: none;
+        transition:
+            transform .2s ease,
+            border-color .2s ease;
+    }
+
+    .related-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(22,133,255,.35);
+    }
+
+    .related-card-image {
+        width: 100%;
+        overflow: hidden;
+        background: #020406;
+    }
+
+    .related-card img {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform .25s ease;
+    }
+
+    .related-card:hover img {
+        transform: scale(1.015);
+    }
+
+    .related-card h3 {
+        margin: 0;
+        padding: 12px;
+        color: #ffffff;
+        font-size: 14px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+
+
+    /* =========================================================
+       ABS ART LIKE / SHARE SYSTEM
+       ========================================================= */
+
+    .abs-like-system {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 25px;
+        direction: ltr;
+    }
+
+    .abs-like-button,
+    .abs-share-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-height: 48px;
+        border: 1px solid rgba(255,255,255,.10);
+        background: #0a1018;
+        color: #ffffff;
+        border-radius: 12px;
+        padding: 9px 15px;
+        cursor: pointer;
+        transition:
+            background .2s ease,
+            border-color .2s ease,
+            transform .15s ease;
+    }
+
+    .abs-like-button:hover,
+    .abs-share-button:hover {
+        background: #101a26;
+        border-color: rgba(255,255,255,.18);
+    }
+
+    .abs-like-button:active,
+    .abs-share-button:active {
+        transform: scale(.96);
+    }
+
+    .abs-like-icon,
+    .abs-share-icon {
+        width: 25px;
+        height: 25px;
+        flex: 0 0 25px;
+    }
+
+    .abs-like-icon {
+        color: #ffffff;
+        transition:
+            color .2s ease,
+            transform .2s ease;
+    }
+
+    .abs-like-button.liked .abs-like-icon {
+        color: #ff3040;
+        transform: scale(1.05);
+    }
+
+    .abs-like-count {
+        min-width: 24px;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 900;
+        line-height: 1;
+        text-align: center;
+    }
+
+    .abs-share-icon {
+        color: #ffffff;
+    }
+
+    .abs-like-message {
+        min-height: 20px;
+        margin-top: 8px;
+        color: #6e7d8d;
+        font-size: 11px;
+        line-height: 1.7;
+        opacity: 0;
+        transition: opacity .2s ease;
+    }
+
+    .abs-like-message.show {
+        opacity: 1;
+    }
+
+    .abs-like-message.error {
+        color: #ff8585;
+    }
+
+    @media (max-width: 650px) {
+        .abs-like-system {
+            gap: 9px;
+        }
+
+        .abs-like-button,
+        .abs-share-button {
+            min-height: 46px;
+            padding: 8px 12px;
+            border-radius: 11px;
+        }
+
+        .abs-like-icon,
+        .abs-share-icon {
+            width: 23px;
+            height: 23px;
+            flex-basis: 23px;
+        }
+
+        .abs-like-count {
+            font-size: 15px;
+        }
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 650px) {
+
+        .work-page {
+            width: 92%;
+            padding-bottom: 40px;
+        }
+
+        .breadcrumb {
+            padding-top: 20px;
+            font-size: 11px;
+        }
+
+        .title-area {
+            padding: 8px 0 22px;
+        }
+
+        .title-area h1 {
+            font-size: 35px;
+        }
+
+        .main-image {
+            border-radius: 12px;
+        }
+
+        .content {
+            padding: 25px 0;
+        }
+
+        .description {
+            font-size: 14px;
+            line-height: 2.1;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .info {
+            padding: 15px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 11px 10px;
+            font-size: 12px;
+        }
+
+        .related {
+            margin-top: 35px;
+        }
+
+        .related h2 {
+            font-size: 21px;
+        }
+
+        .related-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+    }
+
+    @media (max-width: 380px) {
+
+        .actions {
+            grid-template-columns: 1fr;
+        }
+
+    }
+</style>
+
+
+<div class="work-page">
+
+    <!-- =========================
+         BREADCRUMB
+         ========================= -->
+
+    <nav class="breadcrumb" aria-label="مسیر صفحه">
+
+        <a href="{% url 'home' %}">
+            خانه
+        </a>
+
+        <span class="separator">/</span>
+
+        <a href="{% url 'folder_list' %}">
+            پوشه طرح‌ها
+        </a>
+
+        {% if work.folder %}
+
+            <span class="separator">/</span>
+
+            <a href="{% url 'folder_detail' work.folder.pk %}">
+                {{ work.folder.name }}
+            </a>
+
+        {% endif %}
+
+        <span class="separator">/</span>
+
+        <span class="current">
+            {{ work.title }}
+        </span>
+
+    </nav>
+
+
+    <!-- =========================
+         TITLE
+         ========================= -->
+
+    <section class="title-area">
+
+        <h1>
+            {{ work.title }}
+        </h1>
+
+        {% if work.is_new %}
+
+            <span class="new">
+                NEW
+            </span>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =========================
+         IMAGE
+         ========================= -->
+
+    <div class="main-image">
+
+        <img
+            src="{{ work.image.url }}"
+            alt="{{ work.title }}"
+            loading="eager"
+        >
+
+    </div>
+
+
+    <!-- =========================
+         INFORMATION
+         ========================= -->
+
+    <section class="content">
+
+        {% if work.description %}
+
+            <div class="description">
+                {{ work.description }}
+            </div>
+
+        {% endif %}
+
+
+        <div class="info-grid">
+
+            {% if work.for_whom %}
+
+                <div class="info">
+
+                    <span class="label">
+                        برای چه کسی
+                    </span>
+
+                    <div class="value">
+                        {{ work.for_whom }}
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="info">
+
+                <span class="label">
+                    پوشه
+                </span>
+
+                <div class="value">
+
+                    {% if work.folder %}
+
+                        <a href="{% url 'folder_detail' work.folder.pk %}">
+                            {{ work.folder.name }}
+                        </a>
+
+                    {% else %}
+
+                        طرح آزاد
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="info">
+
+                <span class="label">
+                    زمان انتشار
+                </span>
+
+                <div class="value">
+                    {{ work.published_at|persian_datetime }}
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             ACTIONS
+             ========================= -->
+
+
+        <!-- =====================================================
+             LIKE / SHARE
+             ===================================================== -->
+
+        <div class="abs-like-system" dir="ltr">
+
+            
+<div id="absLikeBar">
+
+<form id="absLikeForm"
+      method="post"
+      action="{% url 'work_like_toggle' work.pk %}">
+    {% csrf_token %}
+
+    <button
+        type="submit"
+        id="absLikeButton"
+        data-liked="{{ liked_by_ip|yesno:'true,false' }}"
+        aria-label="لایک"
+        title="لایک"
+    >
+        <span aria-hidden="true">
+            {% if liked_by_ip %}♥{% else %}♡{% endif %}
+        </span>
+    </button>
+
+    <span id="absLikeCount">
+        {{ like_count }}
+    </span>
+
+    <button
+        type="button"
+        id="absLikeShareButton"
+        aria-label="اشتراک‌گذاری"
+        title="اشتراک‌گذاری"
+    >
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             aria-hidden="true">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.6" y1="13.5" x2="15.4" y2="17.5"></line>
+            <line x1="15.4" y1="6.5" x2="8.6" y2="10.5"></line>
+        </svg>
+    </button>
+
+</form>
+
+</div>
+
+
+            <button
+                type="button"
+                class="abs-share-button"
+                id="absLikeShareButton"
+                aria-label="اشتراک‌گذاری طرح"
+            >
+                <svg
+                    class="abs-share-icon"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                >
+                    <path
+                        d="M18 8a3 3 0 1 0-2.83-4A3 3 0 0 0 15 5.17L8.91 8.22A3 3 0 1 0 9 15.78l6.09 3.05A3 3 0 1 0 16 17.83l-6.09-3.05a3.02 3.02 0 0 0 0-5.56L16 6.17A3 3 0 0 0 18 8Z"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    />
+                </svg>
+            </button>
+
+        </div>
+
+        <div
+            id="absLikeMessage"
+            class="abs-like-message"
+            aria-live="polite"
+        ></div>
+
+        <div class="actions">
+
+            <button
+                type="button"
+                class="button primary"
+                id="shareWorkButton"
+            >
+                اشتراک‌گذاری
+            </button>
+
+            <button
+                type="button"
+                class="button"
+                id="copyLinkButton"
+            >
+                کپی لینک
+            </button>
+
+        </div>
+
+
+        <div
+            id="shareStatus"
+            class="share-status"
+            aria-live="polite"
+        ></div>
+
+    </section>
+
+
+    <!-- =========================
+         RELATED WORKS
+         ========================= -->
+
+    {% if other_works %}
+
+        <section class="related">
+
+            <h2>
+                {% if work.folder %}
+                    سایر طرح‌های پوشه
+                {% else %}
+                    سایر طرح‌ها
+                {% endif %}
+            </h2>
+
+            {% if work.folder %}
+
+                <div class="related-subtitle">
+                    طرح‌های دیگر این پوشه
+                </div>
+
+            {% else %}
+
+                <div class="related-subtitle">
+                    آخرین طرح‌های منتشرشده
+                </div>
+
+            {% endif %}
+
+
+            <div class="related-grid">
+
+                {% for other in other_works %}
+
+                    <a
+                        href="{% url 'work_detail' other.pk %}"
+                        class="related-card"
+                    >
+
+                        <div class="related-card-image">
+
+                            <img
+                                src="{{ other.image.url }}"
+                                alt="{{ other.title }}"
+                                loading="lazy"
+                            >
+
+                        </div>
+
+                        <h3>
+                            {{ other.title }}
+                        </h3>
+
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    {% endif %}
+
+</div>
+
+
+<script>
+(function () {
+
+    const copyButton = document.getElementById("copyLinkButton");
+    const shareButton = document.getElementById("shareWorkButton");
+    const statusBox = document.getElementById("shareStatus");
+
+    if (!copyButton || !shareButton || !statusBox) {
+        return;
+    }
+
+
+    function showStatus(message, type) {
+
+        statusBox.textContent = message;
+
+        statusBox.className = "share-status show";
+
+        if (type) {
+            statusBox.classList.add(type);
+        }
+
+        window.clearTimeout(
+            window.absArtStatusTimer
+        );
+
+        window.absArtStatusTimer = window.setTimeout(
+            function () {
+
+                statusBox.classList.remove("show");
+
+            },
+            3000
+        );
+    }
+
+
+    async function copyCurrentLink() {
+
+        const url = window.location.href;
+
+        try {
+
+            if (
+                navigator.clipboard &&
+                window.isSecureContext
+            ) {
+
+                await navigator.clipboard.writeText(url);
+
+                showStatus(
+                    "لینک طرح کپی شد.",
+                    "success"
+                );
+
+                return true;
+            }
+
+        } catch (error) {
+            // fallback پایین‌تر اجرا می‌شود.
+        }
+
+
+        try {
+
+            const textarea =
+                document.createElement("textarea");
+
+            textarea.value = url;
+
+            textarea.setAttribute(
+                "readonly",
+                ""
+            );
+
+            textarea.style.position = "fixed";
+            textarea.style.opacity = "0";
+            textarea.style.pointerEvents = "none";
+
+            document.body.appendChild(textarea);
+
+            textarea.focus();
+            textarea.select();
+
+            const copied =
+                document.execCommand("copy");
+
+            document.body.removeChild(textarea);
+
+            if (copied) {
+
+                showStatus(
+                    "لینک طرح کپی شد.",
+                    "success"
+                );
+
+                return true;
+            }
+
+        } catch (error) {
+            // خطای نهایی پایین‌تر نمایش داده می‌شود.
+        }
+
+
+        showStatus(
+            "کپی لینک انجام نشد.",
+            "error"
+        );
+
+        return false;
+    }
+
+
+    async function shareCurrentWork() {
+
+        const url = window.location.href;
+
+        const shareData = {
+            title: "{{ work.title|escapejs }}",
+            text: "طرح {{ work.title|escapejs }} در ABS ART",
+            url: url
+        };
+
+
+        if (
+            navigator.share &&
+            typeof navigator.share === "function"
+        ) {
+
+            try {
+
+                await navigator.share(
+                    shareData
+                );
+
+                showStatus(
+                    "اشتراک‌گذاری انجام شد.",
+                    "success"
+                );
+
+                return;
+
+            } catch (error) {
+
+                /*
+                 * اگر کاربر پنجره Share را ببندد،
+                 * خطایی نمایش نمی‌دهیم.
+                 */
+                if (
+                    error &&
+                    error.name === "AbortError"
+                ) {
+                    return;
+                }
+
+            }
+
+        }
+
+
+        await copyCurrentLink();
+    }
+
+
+    copyButton.addEventListener(
+        "click",
+        copyCurrentLink
+    );
+
+
+    shareButton.addEventListener(
+        "click",
+        shareCurrentWork
+    );
+
+})();
+</script>
+
+
+
+
+
+<script id="absLikeSystemJS">
+document.addEventListener("DOMContentLoaded", function () {
+
+    const likeBar = document.getElementById("absLikeBar");
+    const likeForm = document.getElementById("absLikeForm");
+    const likeButton = document.getElementById("absLikeButton");
+    const shareButton = document.getElementById("absLikeShareButton");
+
+    if (!likeBar || !likeForm || !likeButton) {
+        return;
+    }
+
+    /*
+     * انتقال Like/Share دقیقاً به زیر تصویر اصلی
+     */
+    const images = Array.from(document.querySelectorAll("img"));
+
+    let mainImage = images.find(function (img) {
+        return (
+            img.naturalWidth >= 300 &&
+            img.naturalHeight >= 200 &&
+            img.offsetWidth >= 200
+        );
+    });
+
+    if (!mainImage && images.length) {
+        mainImage = images[0];
+    }
+
+    if (mainImage) {
+        let imageContainer = mainImage.parentElement;
+
+        if (imageContainer) {
+            imageContainer.insertAdjacentElement(
+                "afterend",
+                likeBar
+            );
+        }
+    }
+
+
+    /*
+     * اگر شمارنده وجود نداشت، خودمان می‌سازیم
+     */
+    let likeCount = document.getElementById("absLikeCount");
+
+    if (!likeCount) {
+        likeCount = document.createElement("span");
+        likeCount.id = "absLikeCount";
+        likeCount.textContent = "0";
+        likeForm.insertBefore(
+            likeCount,
+            shareButton
+        );
+    }
+
+
+    function setLikeState(liked, count) {
+
+        likeButton.dataset.liked =
+            liked ? "true" : "false";
+
+        likeButton.classList.toggle(
+            "liked",
+            liked
+        );
+
+        likeButton.innerHTML =
+            liked
+                ? '<span aria-hidden="true">♥</span>'
+                : '<span aria-hidden="true">♡</span>';
+
+        likeButton.setAttribute(
+            "aria-label",
+            liked
+                ? "حذف لایک"
+                : "لایک"
+        );
+
+        likeCount.textContent =
+            String(count);
+    }
+
+
+    /*
+     * وضعیت اولیه
+     */
+    setLikeState(
+        likeButton.dataset.liked === "true",
+        likeCount.textContent.trim() || "0"
+    );
+
+
+    /*
+     * Like
+     */
+    likeForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            if (likeButton.disabled) {
+                return;
+            }
+
+            likeButton.disabled = true;
+
+            try {
+
+                const response =
+                    await fetch(
+                        likeForm.action,
+                        {
+                            method: "POST",
+                            headers: {
+                                "X-Requested-With":
+                                    "XMLHttpRequest"
+                            },
+                            body:
+                                new FormData(
+                                    likeForm
+                                )
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (
+                    !response.ok ||
+                    !data.ok
+                ) {
+                    throw new Error(
+                        data.message ||
+                        "خطا در ثبت لایک"
+                    );
+                }
+
+                /*
+                 * عدد از سرور می‌آید
+                 */
+                setLikeState(
+                    data.liked,
+                    Number(data.count)
+                );
+
+
+                /*
+                 * پیام
+                 */
+                let message =
+                    document.getElementById(
+                        "absLikeMessage"
+                    );
+
+                if (data.liked) {
+
+                    if (!message) {
+
+                        message =
+                            document.createElement(
+                                "div"
+                            );
+
+                        message.id =
+                            "absLikeMessage";
+
+                        likeBar.appendChild(
+                            message
+                        );
+                    }
+
+                    message.textContent =
+                        "شما طرح «{{ work.title|escapejs }}» را لایک کرده‌اید.";
+
+                    setTimeout(
+                        function () {
+
+                            if (message) {
+                                message.remove();
+                            }
+
+                        },
+                        3000
+                    );
+
+                } else if (message) {
+
+                    message.remove();
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "LIKE ERROR:",
+                    error
+                );
+
+                alert(
+                    "ثبت لایک انجام نشد. دوباره تلاش کنید."
+                );
+
+            } finally {
+
+                likeButton.disabled =
+                    false;
+            }
+        }
+    );
+
+
+    /*
+     * Share کوچک کنار Like
+     */
+    if (shareButton) {
+
+        shareButton.addEventListener(
+            "click",
+            async function () {
+
+                const shareData = {
+                    title:
+                        "{{ work.title|escapejs }}",
+                    text:
+                        "{{ work.description|truncatechars:120|escapejs }}",
+                    url:
+                        window.location.href
+                };
+
+                try {
+
+                    if (
+                        navigator.share &&
+                        typeof navigator.share ===
+                            "function"
+                    ) {
+
+                        await navigator.share(
+                            shareData
+                        );
+
+                        return;
+                    }
+
+                    await navigator.clipboard.writeText(
+                        window.location.href
+                    );
+
+                    alert(
+                        "لینک طرح کپی شد."
+                    );
+
+                } catch (error) {
+
+                    if (
+                        error.name !==
+                        "AbortError"
+                    ) {
+                        alert(
+                            "اشتراک‌گذاری انجام نشد."
+                        );
+                    }
+                }
+            }
+        );
+    }
+
+});
+</script>
+
+{% endblock %}

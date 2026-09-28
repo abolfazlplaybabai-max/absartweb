@@ -1,0 +1,806 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/background.css' %}?v=1">
+<link rel="stylesheet" href="{% static 'css/abs-art.css' %}?v=3">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="robots"
+        content="index, follow"
+    >
+
+    <title>
+        {% block title %}ABS ART{% endblock %}
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #05080d;
+            color: #f2f5f8;
+            font-family: Tahoma, Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .site-header {
+            position: relative;
+            z-index: 100000 !important;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            border-bottom: 1px solid #111c2b;
+            background: rgba(5, 8, 13, 0.94);
+            backdrop-filter: blur(12px);
+        }
+
+        .site-brand {
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .menu-button {
+            width: 44px;
+            height: 44px;
+            border: 1px solid #17243a;
+            border-radius: 10px;
+            background: #0a101a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-button span {
+            width: 20px;
+            height: 2px;
+            background: #dce5f2;
+            border-radius: 5px;
+        }
+
+        .menu-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.65);
+            opacity: 0;
+            visibility: hidden;
+            transition: .25s ease;
+        }
+
+        .menu-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .side-menu {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: min(340px, 88vw);
+            height: 100%;
+            padding: 25px 18px;
+            background: #07101c;
+            border-left: 1px solid #17243a;
+            transform: translateX(100%);
+            transition: .28s ease;
+            overflow-y: auto;
+        }
+
+        .menu-overlay.open .side-menu {
+            transform: translateX(0);
+        }
+
+        .menu-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .menu-head strong {
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .menu-close {
+            width: 38px;
+            height: 38px;
+            border: 1px solid #17243a;
+            border-radius: 9px;
+            background: #0b1422;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .menu-links a {
+            display: block;
+            text-decoration: none;
+            padding: 14px 13px;
+            border-radius: 10px;
+            color: #dce5f2;
+            border: 1px solid transparent;
+            transition: .2s ease;
+            font-size: 14px;
+        }
+
+        .menu-links a:hover {
+            background: #0d1929;
+            border-color: #1a2b44;
+        }
+
+        .site-main {
+            min-height: calc(100vh - 112px);
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 22px 10px 16px;
+            color: #4d5b6e;
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 600px) {
+
+            .site-header {
+                height: 62px;
+                padding: 0 13px;
+            }
+
+            .site-brand {
+                font-size: 15px;
+            }
+
+            .menu-button {
+                width: 42px;
+                height: 42px;
+            }
+        }
+
+    </style>
+
+    
+<style id="abs-message-system">
+.abs-messages {
+    position: fixed;
+    top: 82px;
+    left: 18px;
+    width: min(390px, calc(100vw - 36px));
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 2147483647;
+    pointer-events: none;
+}
+
+.abs-message {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 13px 14px 13px 12px;
+    border: 1px solid #1a2b44;
+    border-radius: 12px;
+    background: rgba(7, 16, 28, .96);
+    color: #e8eef7;
+    box-shadow: 0 16px 45px rgba(0,0,0,.35);
+    backdrop-filter: blur(14px);
+    pointer-events: auto;
+    animation: absMessageIn .28s ease both;
+}
+
+.abs-message-text {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.abs-message-close {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid #263b59;
+    border-radius: 7px;
+    background: #0b1422;
+    color: #aebbd0;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.abs-message-close:hover {
+    color: #fff;
+    background: #122039;
+}
+
+.abs-message-success {
+    border-color: rgba(77, 180, 116, .35);
+}
+
+.abs-message-error {
+    border-color: rgba(220, 80, 80, .42);
+}
+
+.abs-message-warning {
+    border-color: rgba(218, 166, 65, .42);
+}
+
+.abs-message-info {
+    border-color: rgba(76, 137, 207, .42);
+}
+
+.abs-message.is-leaving {
+    animation: absMessageOut .22s ease forwards;
+}
+
+@keyframes absMessageIn {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes absMessageOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+@media (max-width: 600px) {
+    .abs-messages {
+        top: 72px;
+        left: 12px;
+        width: calc(100vw - 24px);
+    }
+
+    .abs-message {
+        min-height: 48px;
+        padding: 11px;
+    }
+
+    .abs-message-text {
+        font-size: 12px;
+    }
+}
+</style>
+
+{% block extra_head %}{% endblock %}
+
+<style>
+
+/* =========================================================
+   ABS ART — MENU LAYER FIX
+   ========================================================= */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    min-height: 100%;
+}
+
+/* دکمه‌ی همبرگری */
+.site-header {
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+/* کل لایه‌ی منو */
+#menuOverlay.menu-overlay {
+    position: fixed !important;
+
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+
+    width: 100vw !important;
+    height: 100vh !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    z-index: 2147483646 !important;
+
+    background: rgba(0, 0, 0, 0.68) !important;
+
+    overflow: hidden !important;
+
+    transform: none !important;
+    filter: none !important;
+
+    isolation: isolate !important;
+
+    pointer-events: none;
+}
+
+/* وقتی منو باز است */
+#menuOverlay.menu-overlay.open {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    pointer-events: auto !important;
+
+    z-index: 2147483646 !important;
+}
+
+/* وقتی بسته است */
+#menuOverlay.menu-overlay:not(.open) {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* خود پنل منو */
+#menuOverlay .side-menu {
+    position: fixed !important;
+
+    top: 0 !important;
+    right: 0 !important;
+
+    width: min(340px, 86vw) !important;
+    height: 100vh !important;
+
+    margin: 0 !important;
+
+    z-index: 2147483647 !important;
+
+    background: #07101c !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    transform: translateX(0) !important;
+    filter: none !important;
+
+    box-sizing: border-box !important;
+
+    box-shadow:
+        -12px 0 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* در حالت بسته، پنل سمت راست خارج باشد */
+#menuOverlay:not(.open) .side-menu {
+    transform: translateX(110%) !important;
+}
+
+/* در حالت باز */
+#menuOverlay.open .side-menu {
+    transform: translateX(0) !important;
+}
+
+/* محتوای منو */
+#menuOverlay .menu-head,
+#menuOverlay .menu-links {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* جلوگیری از لایه‌سازی ناخواسته روی منو */
+#menuOverlay *,
+#menuOverlay::before,
+#menuOverlay::after {
+    box-sizing: border-box;
+}
+
+/* محتوای اصلی همیشه زیر منو */
+.site-main,
+.site-footer {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* بک‌گراند زیر همه */
+#abs-motion-layer {
+    z-index: 1 !important;
+}
+
+body::before,
+body::after {
+    z-index: 0 !important;
+}
+
+/* موبایل */
+@media (max-width: 700px) {
+
+    #menuOverlay .side-menu {
+        width: min(330px, 88vw) !important;
+    }
+}
+</style>
+
+<style id="abs-final-layer-fix">
+
+/* =========================================================
+   ABS ART — FINAL LAYER FIX
+   پس‌زمینه فقط زیر محتوای سایت
+   ========================================================= */
+
+/* سیستم قدیمی پس‌زمینه دیگر استفاده نشود */
+.abs-bg,
+.abs-light {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* لایه پس‌زمینه جدید */
+#abs-motion-layer {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+}
+
+/* گرادیان خود body پایین‌تر از محتوا */
+body::before,
+body::after {
+    z-index: -1 !important;
+    pointer-events: none !important;
+}
+
+/* هدر */
+.site-header {
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+/* محتوای اصلی */
+.site-main {
+    position: relative !important;
+    z-index: 100 !important;
+
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    min-height: calc(100vh - 112px);
+
+    isolation: isolate !important;
+}
+
+/* تمام محتوای داخل main قابل مشاهده باشد */
+.site-main > * {
+    position: relative;
+    z-index: 1;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* خود Home */
+.home-page {
+    position: relative !important;
+    z-index: 2 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* فوتر */
+.site-footer {
+    position: relative !important;
+    z-index: 100 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* منو همیشه بالاتر از همه */
+#menuOverlay.menu-overlay {
+    z-index: 2147483646 !important;
+}
+
+#menuOverlay .side-menu {
+    z-index: 2147483647 !important;
+}
+
+</style>
+
+
+<style id="abs-menu-version">
+.menu-version {
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+    direction: ltr;
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 1.8px;
+    color: rgba(255,255,255,0.32);
+    pointer-events: none;
+    user-select: none;
+}
+</style>
+
+</head>
+
+<body>
+    {% include 'core/_messages.html' %}
+
+<div class="abs-bg" aria-hidden="true">
+    <div class="abs-grid"></div>
+
+    <div class="abs-orb one"></div>
+    <div class="abs-orb two"></div>
+    <div class="abs-orb three"></div>
+
+    <div class="abs-particle p1"></div>
+    <div class="abs-particle p2"></div>
+    <div class="abs-particle p3"></div>
+    <div class="abs-particle p4"></div>
+    <div class="abs-particle p5"></div>
+</div>
+
+<div class="abs-light" aria-hidden="true"></div>
+
+
+    <header class="site-header">
+
+        <a
+            href="{% url 'home' %}"
+            class="site-brand"
+        >
+            ABS ART
+        </a>
+
+        <button
+            type="button"
+            class="menu-button"
+            id="menuOpen"
+            aria-label="باز کردن منو"
+        >
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+    </header>
+
+
+    <div
+        class="menu-overlay"
+        id="menuOverlay"
+    >
+
+        <aside class="side-menu">
+
+            <div class="menu-head">
+
+                <strong>
+                    ABS ART
+                </strong>
+
+                <button
+                    type="button"
+                    class="menu-close"
+                    id="menuClose"
+                    aria-label="بستن منو"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <nav class="menu-links">
+
+                <a href="{% url 'home' %}">
+                    خانه
+                </a>
+
+                <a href="{% url 'folder_list' %}">
+                    پوشه طرح‌ها
+                </a>
+
+                <a href="{% url 'work_list' %}">
+                    همه طرح‌ها
+                </a>
+
+                <a href="{% url 'showcase' %}">
+                    ویترین منتخب
+                </a>
+
+                <a href="{% url 'search' %}">
+                    جستجو
+                </a>
+
+                <a href="{% url 'im_abs_login' %}">
+                    I'm ABS
+                </a>
+
+            
+                <div class="menu-version">1.0.0</div>
+            </nav>
+
+        </aside>
+
+    </div>
+
+
+    <main class="site-main">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <footer class="site-footer">
+        ABS ART
+    </footer>
+
+
+    <script>
+
+        const menuOpen =
+            document.getElementById("menuOpen");
+
+        const menuClose =
+            document.getElementById("menuClose");
+
+        const menuOverlay =
+            document.getElementById("menuOverlay");
+
+
+        function openMenu() {
+
+            menuOverlay.classList.add("open");
+
+            document.body.style.overflow = "hidden";
+
+        }
+
+
+        function closeMenu() {
+
+            menuOverlay.classList.remove("open");
+
+            document.body.style.overflow = "";
+
+        }
+
+
+        menuOpen.addEventListener(
+            "click",
+            openMenu
+        );
+
+
+        menuClose.addEventListener(
+            "click",
+            closeMenu
+        );
+
+
+        menuOverlay.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target === menuOverlay
+                ) {
+                    closeMenu();
+                }
+
+            }
+        );
+
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Escape") {
+                    closeMenu();
+                }
+
+            }
+        );
+
+
+        document.querySelectorAll(
+            ".menu-links a"
+        ).forEach(
+            function(link) {
+
+                link.addEventListener(
+                    "click",
+                    function() {
+                        closeMenu();
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+    {% block extra_js %}
+    {% endblock %}
+
+<script src="{% static 'js/abs-art.js' %}?v=3"></script>
+<script src="{% static 'js/background.js' %}?v=30000"></script>
+
+
+
+
+<script id="abs-message-system-js">
+(function () {
+    const messages = document.querySelectorAll(".abs-message");
+
+    messages.forEach(function (message) {
+        setTimeout(function () {
+            if (!message.isConnected) return;
+
+            message.classList.add("is-leaving");
+
+            setTimeout(function () {
+                if (message.isConnected) {
+                    message.remove();
+                }
+            }, 240);
+        }, 4500);
+    });
+})();
+</script>
+
+</body>
+
+</html>
+

@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}سطل بازیابی | ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+.trash-page{
+    max-width:1050px;
+    margin:0 auto;
+}
+
+.trash-head{
+    margin-bottom:22px;
+}
+
+.trash-head h1{
+    margin:0 0 7px;
+    font-size:25px;
+}
+
+.trash-head p{
+    margin:0;
+    color:#8996a5;
+    font-size:13px;
+}
+
+.trash-list{
+    display:grid;
+    gap:12px;
+}
+
+.trash-card{
+    display:grid;
+    grid-template-columns:90px minmax(0,1fr) auto;
+    gap:15px;
+    align-items:center;
+    padding:13px;
+    background:#0a1119;
+    border:1px solid #261d25;
+    border-radius:12px;
+}
+
+.trash-card img{
+    width:90px;
+    height:90px;
+    object-fit:contain;
+    background:#05080d;
+    border-radius:8px;
+}
+
+.trash-info h2{
+    margin:0 0 8px;
+    font-size:16px;
+}
+
+.trash-info p{
+    margin:0;
+    color:#8996a5;
+    font-size:12px;
+    line-height:1.9;
+}
+
+.trash-actions{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.trash-actions form{
+    margin:0;
+}
+
+.trash-actions button{
+    min-width:105px;
+    min-height:36px;
+    padding:8px 11px;
+    border:0;
+    border-radius:8px;
+    font-family:inherit;
+    cursor:pointer;
+}
+
+.restore-button{
+    background:#173b69;
+    color:#fff;
+}
+
+.delete-button{
+    background:#451b1b;
+    color:#ff9999;
+}
+
+.empty-trash{
+    text-align:center;
+    padding:55px 20px;
+    background:#0a1119;
+    border:1px solid #182638;
+    border-radius:12px;
+    color:#8996a5;
+}
+
+@media(max-width:650px){
+    .trash-card{
+        grid-template-columns:70px 1fr;
+    }
+
+    .trash-card img{
+        width:70px;
+        height:70px;
+    }
+
+    .trash-actions{
+        grid-column:1 / -1;
+        flex-direction:row;
+    }
+
+    .trash-actions form{
+        flex:1;
+    }
+
+    .trash-actions button{
+        width:100%;
+    }
+}
+</style>
+
+<section class="trash-page">
+
+    <div class="trash-head">
+        <h1>سطل بازیابی</h1>
+        <p>طرح‌های حذف‌شده موقت اینجا نگهداری می‌شوند.</p>
+    </div>
+
+    {% if works %}
+
+        <div class="trash-list">
+
+            {% for work in works %}
+
+                <div class="trash-card">
+
+                    {% if work.image %}
+                        <img
+                            src="{{ work.image.url }}"
+                            alt="{{ work.title }}"
+                        >
+                    {% endif %}
+
+                    <div class="trash-info">
+
+                        <h2>{{ work.title }}</h2>
+
+                        <p>
+                            {% if work.folder %}
+                                پوشه: {{ work.folder.name }}<br>
+                            {% else %}
+                                بدون پوشه<br>
+                            {% endif %}
+
+                            {% if work.deleted_at %}
+                                زمان انتقال به سطل:
+                                {{ work.deleted_at|date:"Y/m/d - H:i" }}
+                            {% endif %}
+                        </p>
+
+                    </div>
+
+                    <div class="trash-actions">
+
+                        <form
+                            method="post"
+                            action="{% url 'panel_work_restore' work.pk %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="restore-button"
+                            >
+                                بازیابی
+                            </button>
+
+                        </form>
+
+                        <form
+                            method="post"
+                            action="{% url 'panel_work_delete_permanently' work.pk %}"
+                            onsubmit="return confirm('این طرح برای همیشه حذف شود؟ این عملیات قابل بازگشت نیست.');"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="delete-button"
+                            >
+                                حذف دائمی
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-trash">
+            سطل بازیابی خالی است.
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

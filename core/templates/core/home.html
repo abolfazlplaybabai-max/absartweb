@@ -1,0 +1,529 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ site_settings.site_name|default:"ABS ART" }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+.home-page {
+    width: min(1200px, 94%);
+    margin: auto;
+}
+
+/* HERO */
+.hero {
+    padding: 28px 0 0;
+}
+
+.banner {
+    width: 100%;
+    overflow: hidden;
+    background: #080d14;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+}
+
+.banner img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.banner-empty {
+    min-height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at center,
+        rgba(22,133,255,.18),
+        transparent 60%);
+    color: #1685ff;
+    font-family: Arial, sans-serif;
+    font-size: clamp(35px, 8vw, 70px);
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+/* INTRO */
+.intro {
+    padding: 55px 0 45px;
+}
+
+.intro h1 {
+    margin: 0;
+    color: #1685ff;
+    font-size: clamp(35px, 7vw, 65px);
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.intro p {
+    max-width: 800px;
+    margin: 18px 0 0;
+    color: #aab4c0;
+    font-size: 16px;
+    line-height: 2.2;
+    white-space: pre-line;
+}
+
+.logo-box {
+    margin-top: 28px;
+}
+
+.logo-box img {
+    width: auto;
+    max-width: 220px;
+    max-height: 100px;
+    display: block;
+    object-fit: contain;
+}
+
+/* SECTION */
+.section-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.section-heading a {
+    color: #1685ff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* RECENT WORKS */
+.latest {
+    padding: 10px 0 25px;
+}
+
+.latest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.latest-card {
+    display: block;
+    overflow: hidden;
+    background: #0a1018;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px;
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.latest-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(22,133,255,.55);
+    box-shadow: 0 14px 35px rgba(0,0,0,.25);
+}
+
+.latest-image {
+    width: 100%;
+    background: #030507;
+    position: relative;
+}
+
+.latest-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.new-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #1685ff;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 900;
+}
+
+.latest-info {
+    padding: 15px;
+}
+
+.latest-title {
+    margin: 0;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.7;
+}
+
+.latest-description {
+    margin-top: 6px;
+    color: #7f8b99;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.latest-meta {
+    margin-top: 8px;
+    color: #687584;
+    font-size: 10px;
+}
+
+/* EMPTY */
+.empty {
+    padding: 55px 20px;
+    text-align: center;
+    color: #7f8b99;
+    background: #0a1018;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 16px;
+}
+
+/* QUICK LINKS */
+.quick-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+    padding: 30px 0 10px;
+}
+
+.quick-link {
+    display: block;
+    padding: 18px;
+    background: #0a1018;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    transition:
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.quick-link:hover {
+    transform: translateY(-3px);
+    border-color: rgba(22,133,255,.5);
+}
+
+.quick-link span {
+    display: block;
+    margin-top: 6px;
+    color: #687584;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+/* SOCIAL */
+.social-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 24px 0 10px;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 13px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 999px;
+    background: #0a1018;
+    color: #9aa6b3;
+    font-size: 11px;
+    transition:
+        color .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.social-link:hover {
+    color: #1685ff;
+    border-color: rgba(22,133,255,.5);
+    transform: translateY(-2px);
+}
+
+/* MOBILE */
+@media (max-width: 850px) {
+    .latest-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .home-page {
+        width: 92%;
+    }
+
+    .hero {
+        padding-top: 18px;
+    }
+
+    .banner {
+        border-radius: 12px;
+    }
+
+    .banner-empty {
+        min-height: 135px;
+    }
+
+    .intro {
+        padding: 40px 0 35px;
+    }
+
+    .intro h1 {
+        font-size: 38px;
+    }
+
+    .intro p {
+        font-size: 14px;
+    }
+
+    .latest-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .latest-card {
+        border-radius: 12px;
+    }
+
+    .latest-title {
+        font-size: 17px;
+    }
+
+    .section-heading {
+        align-items: center;
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+
+    .quick-links {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="home-page">
+
+    <!-- BANNER -->
+    <section class="hero">
+        <div class="banner">
+            {% if site_settings and site_settings.banner %}
+                <img
+                    src="{{ site_settings.banner.url }}"
+                    alt="{{ site_settings.site_name|default:'ABS ART' }}"
+                >
+            {% else %}
+                <div class="banner-empty">ABS ART</div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- INTRO -->
+    <section class="intro">
+        <h1>
+            {{ site_settings.intro_title|default:"ABS ART" }}
+        </h1>
+
+        {% if site_settings and site_settings.intro_text %}
+            <p>{{ site_settings.intro_text }}</p>
+        {% else %}
+            <p>مجموعه آثار و طراحی‌های گرافیکی ABS ART.</p>
+        {% endif %}
+
+        {% if site_settings and site_settings.logo %}
+            <div class="logo-box">
+                <img
+                    src="{{ site_settings.logo.url }}"
+                    alt="ABS ART Logo"
+                >
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- RECENT WORKS -->
+    <section class="latest">
+
+        <div class="section-heading">
+            <h2>آخرین طرح‌ها</h2>
+
+            <a href="{% url 'work_list' %}">
+                مشاهده همه طرح‌ها
+            </a>
+        </div>
+
+        {% if latest_works %}
+
+            <div class="latest-grid">
+
+                {% for work in latest_works %}
+
+                    <a
+                        href="{% url 'work_detail' work.pk %}"
+                        class="latest-card"
+                    >
+
+                        <div class="latest-image">
+
+                            <img
+                                src="{{ work.image.url }}"
+                                alt="{{ work.title }}"
+                                loading="lazy"
+                            >
+
+                            {% if work.is_new %}
+                                <span class="new-badge">NEW</span>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="latest-info">
+
+                            <h3 class="latest-title">
+                                {{ work.title }}
+                            </h3>
+
+                            {% if work.description %}
+                                <div class="latest-description">
+                                    {{ work.description|truncatechars:100 }}
+                                </div>
+                            {% endif %}
+
+                            <div class="latest-meta">
+
+                                {% if work.folder %}
+                                    پوشه: {{ work.folder.name }}
+                                {% else %}
+                                    آزاد
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                هنوز هیچ طرح فعالی منتشر نشده است.
+            </div>
+
+        {% endif %}
+
+    </section>
+
+    <!-- QUICK LINKS -->
+    <section class="quick-links">
+
+        <a
+            href="{% url 'folder_list' %}"
+            class="quick-link"
+        >
+            پوشه طرح‌ها
+            <span>مشاهده دسته‌بندی آثار</span>
+        </a>
+
+        <a
+            href="{% url 'work_list' %}"
+            class="quick-link"
+        >
+            همه طرح‌ها
+            <span>مشاهده تمام آثار منتشرشده</span>
+        </a>
+
+        <a
+            href="{% url 'showcase' %}"
+            class="quick-link"
+        >
+            ویترین منتخب
+            <span>آثار منتخب ABS ART</span>
+        </a>
+
+        <a
+            href="{% url 'im_abs_login' %}"
+            class="quick-link"
+        >
+            I'm ABS
+            <span>ورود به بخش اختصاصی</span>
+        </a>
+
+    </section>
+
+    <!-- SOCIAL -->
+    {% if site_settings %}
+        {% if site_settings.telegram or site_settings.instagram or site_settings.rubika or site_settings.website %}
+
+            <section class="social-box">
+
+                {% if site_settings.telegram %}
+                    <a
+                        href="{{ site_settings.telegram }}"
+                        class="social-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        تلگرام
+                    </a>
+                {% endif %}
+
+                {% if site_settings.instagram %}
+                    <a
+                        href="{{ site_settings.instagram }}"
+                        class="social-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        اینستاگرام
+                    </a>
+                {% endif %}
+
+                {% if site_settings.rubika %}
+                    <a
+                        href="{{ site_settings.rubika }}"
+                        class="social-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        روبیکا
+                    </a>
+                {% endif %}
+
+                {% if site_settings.website %}
+                    <a
+                        href="{{ site_settings.website }}"
+                        class="social-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        وب‌سایت
+                    </a>
+                {% endif %}
+
+            </section>
+
+        {% endif %}
+    {% endif %}
+
+</div>
+
+{% endblock %}

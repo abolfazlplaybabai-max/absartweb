@@ -1,0 +1,379 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+.dashboard-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 16px 55px;
+}
+
+.dashboard-title {
+    margin-bottom: 25px;
+}
+
+.dashboard-title h1 {
+    margin: 0 0 8px;
+    color: #f2f5fa;
+    font-size: clamp(23px, 3vw, 30px);
+    font-weight: 800;
+}
+
+.dashboard-title p {
+    margin: 0;
+    color: #8f9aaa;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.quick-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 13px 16px;
+    border-radius: 13px;
+    border: 1px solid #17345b;
+    background: #0c192b;
+    color: #f4f7fb;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 750;
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+}
+
+.quick-action:hover {
+    transform: translateY(-2px);
+    border-color: #2871c9;
+    background: #0e2139;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.dashboard-stat {
+    min-width: 0;
+    background: #0b1220;
+    border: 1px solid #17243a;
+    border-radius: 14px;
+    padding: 17px 18px;
+}
+
+.dashboard-stat span {
+    display: block;
+    margin-bottom: 7px;
+    color: #8995a8;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.dashboard-stat strong {
+    display: block;
+    color: #f3f6fb;
+    font-size: 25px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.dashboard-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.dashboard-card {
+    display: block;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #17243a;
+    border-radius: 16px;
+    background: #0b1220;
+    color: #fff;
+    text-decoration: none;
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    border-color: #285b9c;
+    background: #0c1524;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .18);
+}
+
+.dashboard-card h3 {
+    margin: 0 0 8px;
+    color: #f0f4fa;
+    font-size: 16px;
+    line-height: 1.7;
+    font-weight: 750;
+}
+
+.dashboard-card p {
+    margin: 0;
+    color: #8f9aaa;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.dashboard-logout {
+    margin-top: 14px;
+}
+
+.dashboard-logout button {
+    width: 100%;
+    min-height: 54px;
+    border: 1px solid #17243a;
+    border-radius: 16px;
+    background: #0b1220;
+    color: #c9d1dc;
+    padding: 15px 18px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        color .2s ease;
+}
+
+.dashboard-logout button:hover {
+    border-color: #49303a;
+    background: #171117;
+    color: #f0cbd1;
+}
+
+@media (max-width: 850px) {
+
+    .dashboard-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+
+    .dashboard-page {
+        padding: 22px 12px 42px;
+    }
+
+    .quick-actions,
+    .dashboard-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-card {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 430px) {
+
+    .dashboard-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+    }
+
+    .dashboard-stat {
+        padding: 14px;
+    }
+
+    .dashboard-stat strong {
+        font-size: 22px;
+    }
+}
+</style>
+
+<section class="dashboard-page">
+
+    <header class="dashboard-title">
+
+        <h1>مدیریت ABS ART</h1>
+
+        <p>
+            کنترل و مدیریت محتوای سایت
+        </p>
+
+    </header>
+
+    <section class="quick-actions">
+
+        <a
+            href="{% url 'panel_work_create' %}"
+            class="quick-action"
+        >
+            + افزودن طرح
+        </a>
+
+        <a
+            href="{% url 'panel_folder_create' %}"
+            class="quick-action"
+        >
+            + افزودن پوشه
+        </a>
+
+    </section>
+
+    <section class="dashboard-stats">
+
+        <div class="dashboard-stat">
+            <span>کل طرح‌ها</span>
+            <strong>{{ total_works }}</strong>
+        </div>
+
+        <div class="dashboard-stat">
+            <span>طرح‌های فعال</span>
+            <strong>{{ active_works }}</strong>
+        </div>
+
+        <div class="dashboard-stat">
+            <span>پیش‌نویس‌ها</span>
+            <strong>{{ draft_works }}</strong>
+        </div>
+
+        <div class="dashboard-stat">
+            <span>طرح‌های غیرفعال</span>
+            <strong>{{ inactive_works }}</strong>
+        </div>
+
+        <div class="dashboard-stat">
+            <span>سطل بازیابی</span>
+            <strong>{{ trash_works }}</strong>
+        </div>
+
+        <div class="dashboard-stat">
+            <span>پوشه‌ها</span>
+            <strong>{{ total_folders }}</strong>
+        </div>
+
+    </section>
+
+    <section class="dashboard-actions">
+
+        <a
+            href="{% url 'panel_work_list' %}"
+            class="dashboard-card"
+        >
+            <h3>مدیریت طرح‌ها</h3>
+            <p>افزودن، ویرایش و مدیریت وضعیت طرح‌ها</p>
+        </a>
+
+        <a
+            href="{% url 'panel_drafts' %}"
+            class="dashboard-card"
+        >
+            <h3>پیش‌نویس‌ها</h3>
+            <p>مدیریت طرح‌هایی که هنوز منتشر نشده‌اند</p>
+        </a>
+
+        <a
+            href="{% url 'panel_trash' %}"
+            class="dashboard-card"
+        >
+            <h3>سطل بازیابی</h3>
+            <p>بازیابی یا حذف دائمی طرح‌ها</p>
+        </a>
+
+        <a
+            href="{% url 'panel_archive' %}"
+            class="dashboard-card"
+        >
+            <h3>آرشیو هوشمند</h3>
+            <p>جستجو و فیلتر تمام وضعیت‌های طرح‌ها</p>
+        </a>
+
+        <a
+            href="{% url 'panel_folder_list' %}"
+            class="dashboard-card"
+        >
+            <h3>مدیریت پوشه‌ها</h3>
+            <p>ساخت، ویرایش و حذف پوشه‌ها</p>
+        </a>
+
+        <a
+            href="{% url 'panel_showcase' %}"
+            class="dashboard-card"
+        >
+            <h3>ویترین منتخب</h3>
+            <p>مدیریت طرح‌های ویترین</p>
+        </a>
+
+        <a
+            href="{% url 'panel_site_settings' %}"
+            class="dashboard-card"
+        >
+            <h3>تنظیمات سایت</h3>
+            <p>بنر، لوگو، معرفی و شبکه‌های اجتماعی</p>
+        </a>
+
+        <a
+            href="{% url 'panel_preview_list' %}"
+            class="dashboard-card"
+        >
+            <h3>پیش‌نمایش</h3>
+            <p>مشاهده طرح‌ها با ظاهر واقعی سایت قبل از انتشار</p>
+        </a>
+
+        <a
+            href="{% url 'panel_stats' %}"
+            class="dashboard-card"
+        >
+            <h3>آمار</h3>
+            <p>آمار طرح‌ها، پوشه‌ها و ویترین منتخب</p>
+        </a>
+
+        <a
+            href="{% url 'panel_security' %}"
+            class="dashboard-card"
+        >
+            <h3>امنیت</h3>
+            <p>تغییر رمزهای ورود I’m ABS</p>
+        </a>
+
+        <a
+            href="{% url 'panel_maintenance' %}"
+            class="dashboard-card"
+        >
+            <h3>حالت تعمیرات</h3>
+            <p>فعال یا غیرفعال کردن صفحه تعمیرات سایت</p>
+        </a>
+
+    </section>
+
+    <form
+        method="post"
+        action="{% url 'panel_logout' %}"
+        class="dashboard-logout"
+    >
+
+        {% csrf_token %}
+
+        <button type="submit">
+            خروج از پنل
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ folder.name }} | ABS ART
+{% endblock %}
+
+{% block meta_description %}
+طرح‌های منتشرشده در پوشه {{ folder.name }} از مجموعه ABS ART.
+{% endblock %}
+
+{% block canonical_url %}
+{{ request.build_absolute_uri }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .folder-page {
+        width: min(1220px, 94vw);
+        margin: 0 auto;
+        padding: 18px 0 70px;
+    }
+
+    .breadcrumb {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 0 25px;
+        color: rgba(255,255,255,.34);
+        font-size: 11px;
+        line-height: 1.8;
+    }
+
+    .breadcrumb a {
+        color: rgba(255,255,255,.58);
+        text-decoration: none;
+        transition: color .18s ease;
+    }
+
+    .breadcrumb a:hover {
+        color: #fff;
+    }
+
+    .breadcrumb .current {
+        color: rgba(255,255,255,.72);
+    }
+
+    .folder-heading {
+        padding: 4px 0 30px;
+    }
+
+    .folder-heading h1 {
+        margin: 0;
+        color: #fff;
+        font-size: clamp(30px, 5vw, 48px);
+        line-height: 1.2;
+        font-weight: 900;
+        letter-spacing: -.5px;
+    }
+
+    .folder-heading p {
+        margin: 10px 0 0;
+        color: rgba(255,255,255,.50);
+        font-size: 13px;
+        line-height: 1.9;
+    }
+
+    .works-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .work-card {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 18px;
+        background: rgba(7,16,28,.82);
+        color: inherit;
+        text-decoration: none;
+        transition:
+            transform .22s ease,
+            border-color .22s ease,
+            background .22s ease,
+            box-shadow .22s ease;
+    }
+
+    .work-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255,255,255,.18);
+        background: rgba(7,16,28,.96);
+        box-shadow: 0 14px 35px rgba(0,0,0,.20);
+    }
+
+    .image-box {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: #080e17;
+        line-height: 0;
+    }
+
+    .image-box img {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        transition: transform .35s ease;
+    }
+
+    .work-card:hover .image-box img {
+        transform: scale(1.018);
+    }
+
+    .image-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(0,0,0,.05),
+                transparent 45%,
+                rgba(0,0,0,.17)
+            );
+    }
+
+    .new-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 25px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: #fff;
+        color: #07101c;
+        font-family: Arial, sans-serif;
+        font-size: 9px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        line-height: 1;
+        box-shadow: 0 5px 18px rgba(0,0,0,.25);
+    }
+
+    .work-info {
+        padding: 15px 16px 17px;
+    }
+
+    .work-title {
+        margin: 0;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 850;
+        line-height: 1.65;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .work-description {
+        margin: 6px 0 0;
+        color: rgba(255,255,255,.45);
+        font-size: 11px;
+        line-height: 1.8;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .work-meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 11px;
+    }
+
+    .work-meta {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        padding: 0 8px;
+        border-radius: 7px;
+        background: rgba(255,255,255,.055);
+        color: rgba(255,255,255,.52);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .empty {
+        padding: 70px 22px;
+        border: 1px dashed rgba(255,255,255,.10);
+        border-radius: 20px;
+        background: rgba(7,16,28,.42);
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255,255,255,.06);
+        color: rgba(255,255,255,.70);
+        font-size: 20px;
+    }
+
+    .empty-title {
+        margin: 0 0 7px;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 850;
+    }
+
+    .empty-text {
+        margin: 0;
+        color: rgba(255,255,255,.44);
+        font-size: 12px;
+        line-height: 1.9;
+    }
+
+    @media (max-width: 680px) {
+        .folder-page {
+            width: 94vw;
+            padding-top: 12px;
+        }
+
+        .breadcrumb {
+            padding-top: 8px;
+            padding-bottom: 20px;
+        }
+
+        .folder-heading {
+            padding-bottom: 24px;
+        }
+
+        .folder-heading h1 {
+            font-size: 30px;
+        }
+
+        .folder-heading p {
+            font-size: 12px;
+        }
+
+        .works-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .work-card {
+            border-radius: 15px;
+        }
+
+        .work-info {
+            padding: 13px 14px 15px;
+        }
+
+        .work-title {
+            font-size: 15px;
+        }
+
+        .work-description {
+            font-size: 10px;
+        }
+    }
+</style>
+
+<section class="folder-page">
+
+    <nav class="breadcrumb" aria-label="مسیر صفحه">
+
+        <a href="{% url 'home' %}">
+            خانه
+        </a>
+
+        <span>/</span>
+
+        <a href="{% url 'folder_list' %}">
+            پوشه طرح‌ها
+        </a>
+
+        <span>/</span>
+
+        <span class="current">
+            {{ folder.name }}
+        </span>
+
+    </nav>
+
+
+    <header class="folder-heading">
+
+        <h1>
+            {{ folder.name }}
+        </h1>
+
+        <p>
+            طرح‌های منتشرشده در این پوشه
+        </p>
+
+    </header>
+
+
+    {% if works %}
+
+        <section class="works-grid">
+
+            {% for work in works %}
+
+                <a
+                    href="{% url 'work_detail' work.pk %}"
+                    class="work-card"
+                    aria-label="مشاهده {{ work.title }}"
+                >
+
+                    <div class="image-box">
+
+                        {% if work.is_new %}
+                            <span class="new-badge">
+                                NEW
+                            </span>
+                        {% endif %}
+
+                        <img
+                            src="{{ work.image.url }}"
+                            alt="{{ work.title }}"
+                            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                        >
+
+                        <span
+                            class="image-overlay"
+                            aria-hidden="true"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="work-info">
+
+                        <h2 class="work-title">
+                            {{ work.title }}
+                        </h2>
+
+
+                        {% if work.description %}
+                            <p class="work-description">
+                                {{ work.description }}
+                            </p>
+                        {% endif %}
+
+
+                        <div class="work-meta-row">
+
+                            <span class="work-meta">
+                                {{ work.published_at|date:"Y/m/d H:i" }}
+                            </span>
+
+                            {% if work.for_whom %}
+                                <span class="work-meta">
+                                    {{ work.for_whom }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </section>
+
+    {% else %}
+
+        <div class="empty">
+
+            <div class="empty-icon" aria-hidden="true">
+                ▫
+            </div>
+
+            <h2 class="empty-title">
+                این پوشه هنوز طرحی ندارد
+            </h2>
+
+            <p class="empty-text">
+                هنوز هیچ طرح فعال و منتشرشده‌ای در این پوشه وجود ندارد.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

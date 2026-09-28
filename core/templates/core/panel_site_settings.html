@@ -1,0 +1,535 @@
+{% extends "base.html" %}
+
+{% block title %}تنظیمات سایت | ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+.settings-page {
+    width: min(920px, 100%);
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+.settings-header {
+    margin-bottom: 24px;
+}
+
+.settings-header h1 {
+    margin: 0 0 8px;
+    font-size: 25px;
+    line-height: 1.5;
+    color: #ffffff;
+}
+
+.settings-header p {
+    margin: 0;
+    color: #8997a8;
+    font-size: 13px;
+    line-height: 1.9;
+}
+
+.settings-form {
+    background: #0b1119;
+    border: 1px solid #172333;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.settings-section {
+    padding: 24px;
+    border-bottom: 1px solid #172333;
+}
+
+.settings-section:last-child {
+    border-bottom: 0;
+}
+
+.section-title {
+    margin: 0 0 5px;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.section-description {
+    margin: 0 0 22px;
+    color: #738195;
+    font-size: 11px;
+    line-height: 1.9;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #dce5ee;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 13px;
+    border: 1px solid #253446;
+    border-radius: 9px;
+    background: #070c12;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.7;
+    outline: none;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+}
+
+.form-input:focus {
+    border-color: #1767c9;
+    background: #08101a;
+    box-shadow: 0 0 0 3px rgba(0, 71, 171, .12);
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.9;
+}
+
+input[type="file"].form-input {
+    padding: 9px;
+    cursor: pointer;
+}
+
+.form-help {
+    margin-top: 7px;
+    color: #707d8d;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.current-media {
+    margin-top: 13px;
+    padding: 12px;
+    border: 1px solid #172333;
+    border-radius: 10px;
+    background: #070c12;
+}
+
+.current-media img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 260px;
+    margin-top: 9px;
+    object-fit: contain;
+    border-radius: 7px;
+}
+
+.current-logo img {
+    max-width: 180px;
+    max-height: 180px;
+}
+
+.media-label {
+    color: #9aa8b8;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.error-list {
+    margin-top: 7px;
+    color: #ff8585;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.error-list ul {
+    margin: 0;
+    padding-right: 18px;
+}
+
+.success-note {
+    margin: 0 24px 0;
+    padding: 12px 14px;
+    border: 1px solid #1c5131;
+    border-radius: 9px;
+    background: #10261a;
+    color: #7ee0a0;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.success-wrap {
+    padding-top: 22px;
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    padding: 22px 24px;
+    background: #080d14;
+    border-top: 1px solid #172333;
+}
+
+.save-button,
+.back-button {
+    min-height: 46px;
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 9px;
+    text-align: center;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    box-sizing: border-box;
+}
+
+.save-button {
+    border: 1px solid #1767c9;
+    background: #0047ab;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background: #0758b8;
+}
+
+.back-button {
+    border: 1px solid #253446;
+    background: #111a24;
+    color: #dce5ee;
+}
+
+.back-button:hover {
+    background: #162230;
+}
+
+@media (max-width: 700px) {
+    .settings-page {
+        padding-bottom: 25px;
+    }
+
+    .settings-section {
+        padding: 19px 16px;
+    }
+
+    .success-note {
+        margin: 0 16px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        padding: 18px 16px;
+    }
+
+    .social-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+@media (max-width: 420px) {
+    .settings-header h1 {
+        font-size: 22px;
+    }
+
+    .settings-section {
+        padding: 17px 13px;
+    }
+
+    .form-actions {
+        padding: 16px 13px;
+    }
+
+    .success-note {
+        margin: 0 13px;
+    }
+}
+</style>
+
+<div class="settings-page">
+
+    <div class="settings-header">
+        <h1>تنظیمات سایت</h1>
+        <p>
+            اطلاعات اصلی، هویت بصری، متن معرفی و لینک‌های اجتماعی ABS ART را مدیریت کن.
+        </p>
+    </div>
+
+    {% if request.method == "POST" and not form.errors %}
+        <div class="success-wrap">
+            <div class="success-note">
+                تنظیمات با موفقیت ذخیره شد.
+            </div>
+        </div>
+    {% endif %}
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        class="settings-form"
+    >
+        {% csrf_token %}
+
+        <!-- اطلاعات اصلی -->
+        <section class="settings-section">
+
+            <h2 class="section-title">اطلاعات اصلی</h2>
+
+            <p class="section-description">
+                نامی که به عنوان هویت اصلی سایت استفاده می‌شود.
+            </p>
+
+            <div class="form-group">
+
+                {{ form.site_name.label_tag }}
+                {{ form.site_name }}
+
+                {% if form.site_name.errors %}
+                    <div class="error-list">
+                        {{ form.site_name.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- هویت بصری -->
+        <section class="settings-section">
+
+            <h2 class="section-title">هویت بصری</h2>
+
+            <p class="section-description">
+                بنر و لوگوی اصلی سایت از این بخش مدیریت می‌شوند.
+            </p>
+
+            <div class="form-group">
+
+                {{ form.banner.label_tag }}
+                {{ form.banner }}
+
+                <div class="form-help">
+                    تصویر بنر اصلی سایت را انتخاب کن.
+                </div>
+
+                {% if site_settings.banner %}
+                    <div class="current-media">
+
+                        <div class="media-label">
+                            بنر فعلی
+                        </div>
+
+                        <img
+                            src="{{ site_settings.banner.url }}"
+                            alt="بنر ABS ART"
+                        >
+
+                    </div>
+                {% endif %}
+
+                {% if form.banner.errors %}
+                    <div class="error-list">
+                        {{ form.banner.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+
+                {{ form.logo.label_tag }}
+                {{ form.logo }}
+
+                <div class="form-help">
+                    لوگوی اصلی ABS ART را انتخاب کن.
+                </div>
+
+                {% if site_settings.logo %}
+                    <div class="current-media current-logo">
+
+                        <div class="media-label">
+                            لوگوی فعلی
+                        </div>
+
+                        <img
+                            src="{{ site_settings.logo.url }}"
+                            alt="لوگوی ABS ART"
+                        >
+
+                    </div>
+                {% endif %}
+
+                {% if form.logo.errors %}
+                    <div class="error-list">
+                        {{ form.logo.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- معرفی -->
+        <section class="settings-section">
+
+            <h2 class="section-title">معرفی ABS ART</h2>
+
+            <p class="section-description">
+                عنوان و متن معرفی که در صفحه اصلی نمایش داده می‌شوند.
+            </p>
+
+            <div class="form-group">
+
+                {{ form.intro_title.label_tag }}
+                {{ form.intro_title }}
+
+                {% if form.intro_title.errors %}
+                    <div class="error-list">
+                        {{ form.intro_title.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+
+            <div class="form-group">
+
+                {{ form.intro_text.label_tag }}
+                {{ form.intro_text }}
+
+                {% if form.intro_text.errors %}
+                    <div class="error-list">
+                        {{ form.intro_text.errors }}
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- شبکه‌های اجتماعی -->
+        <section class="settings-section">
+
+            <h2 class="section-title">شبکه‌های اجتماعی</h2>
+
+            <p class="section-description">
+                لینک یا شناسه صفحات ABS ART را وارد کن.
+            </p>
+
+            <div class="social-grid">
+
+                <div class="form-group">
+                    {{ form.telegram.label_tag }}
+                    {{ form.telegram }}
+
+                    <div class="form-help">
+                        لینک یا شناسه تلگرام
+                    </div>
+
+                    {% if form.telegram.errors %}
+                        <div class="error-list">
+                            {{ form.telegram.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                <div class="form-group">
+                    {{ form.instagram.label_tag }}
+                    {{ form.instagram }}
+
+                    <div class="form-help">
+                        لینک یا شناسه اینستاگرام
+                    </div>
+
+                    {% if form.instagram.errors %}
+                        <div class="error-list">
+                            {{ form.instagram.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                <div class="form-group">
+                    {{ form.rubika.label_tag }}
+                    {{ form.rubika }}
+
+                    <div class="form-help">
+                        لینک یا شناسه روبیکا
+                    </div>
+
+                    {% if form.rubika.errors %}
+                        <div class="error-list">
+                            {{ form.rubika.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                <div class="form-group">
+                    {{ form.website.label_tag }}
+                    {{ form.website }}
+
+                    <div class="form-help">
+                        آدرس کامل وب‌سایت
+                    </div>
+
+                    {% if form.website.errors %}
+                        <div class="error-list">
+                            {{ form.website.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- عملیات -->
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="save-button"
+            >
+                ذخیره تنظیمات
+            </button>
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="back-button"
+            >
+                بازگشت به داشبورد
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

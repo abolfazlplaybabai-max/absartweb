@@ -1,0 +1,210 @@
+/* =========================================
+   ABS ART — STATIC NAVY ATMOSPHERIC BACKGROUND
+   ========================================= */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    background: #06152a !important;
+    overflow-x: hidden;
+}
+
+/* Background layer */
+#abs-art-static-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            ellipse at 18% 24%,
+            rgba(36, 91, 157, 0.25) 0%,
+            rgba(36, 91, 157, 0.10) 18%,
+            transparent 43%
+        ),
+        radial-gradient(
+            ellipse at 82% 28%,
+            rgba(20, 70, 135, 0.20) 0%,
+            rgba(20, 70, 135, 0.08) 20%,
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse at 52% 82%,
+            rgba(13, 51, 103, 0.24) 0%,
+            transparent 42%
+        ),
+        linear-gradient(
+            145deg,
+            #020a17 0%,
+            #06152a 45%,
+            #071a32 72%,
+            #020914 100%
+        );
+}
+
+/* Soft fixed glow */
+#abs-art-static-bg::before {
+    content: "";
+    position: absolute;
+    inset: -10%;
+
+    background:
+        radial-gradient(
+            ellipse 38% 22% at 12% 58%,
+            rgba(44, 104, 175, 0.12),
+            transparent 72%
+        ),
+        radial-gradient(
+            ellipse 32% 24% at 88% 66%,
+            rgba(31, 88, 157, 0.10),
+            transparent 72%
+        ),
+        radial-gradient(
+            ellipse 28% 18% at 52% 18%,
+            rgba(71, 130, 195, 0.08),
+            transparent 75%
+        );
+
+    filter: blur(35px);
+}
+
+/* Static smoke / mist */
+#abs-art-static-bg::after {
+    content: "";
+    position: absolute;
+    inset: -15%;
+
+    background:
+        radial-gradient(
+            ellipse 34% 13% at 24% 40%,
+            rgba(115, 157, 195, 0.055),
+            transparent 72%
+        ),
+        radial-gradient(
+            ellipse 42% 15% at 72% 51%,
+            rgba(100, 143, 184, 0.045),
+            transparent 74%
+        ),
+        radial-gradient(
+            ellipse 30% 12% at 47% 72%,
+            rgba(102, 145, 187, 0.04),
+            transparent 72%
+        ),
+        radial-gradient(
+            ellipse 25% 10% at 82% 84%,
+            rgba(75, 125, 175, 0.04),
+            transparent 70%
+        );
+
+    filter: blur(32px);
+    transform: rotate(-7deg);
+}
+
+/* Very subtle static wave lines */
+.abs-art-wave {
+    position: absolute;
+    width: 130%;
+    height: 180px;
+    left: -15%;
+    border-radius: 50%;
+    border-top: 1px solid rgba(116, 165, 210, 0.045);
+    border-bottom: 1px solid rgba(116, 165, 210, 0.025);
+    filter: blur(2px);
+}
+
+.abs-art-wave.wave-1 {
+    top: 30%;
+    transform: rotate(-5deg);
+}
+
+.abs-art-wave.wave-2 {
+    top: 58%;
+    transform: rotate(4deg);
+}
+
+.abs-art-wave.wave-3 {
+    top: 76%;
+    transform: rotate(-3deg);
+}
+
+/* Tiny static particles */
+.abs-art-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(177, 211, 239, 0.35);
+    box-shadow:
+        0 0 5px rgba(110, 170, 220, 0.18);
+}
+
+/* Website content stays above background */
+body > *:not(#abs-art-static-bg) {
+    position: relative;
+    z-index: 2;
+}
+
+/* Preserve transparent areas */
+main,
+header,
+footer {
+    position: relative;
+}
+
+@media (max-width: 700px) {
+    #abs-art-static-bg::before {
+        filter: blur(28px);
+    }
+
+    #abs-art-static-bg::after {
+        filter: blur(25px);
+    }
+
+    .abs-art-wave {
+        opacity: 0.7;
+    }
+}
+
+
+/* =========================================================
+   ABS ART — GLOBAL LAYER PRIORITY FIX
+   Menu must always stay above page content.
+   ========================================================= */
+
+.site-header {
+    position: relative !important;
+    z-index: 100000 !important;
+}
+
+.site-header .menu-overlay,
+.menu-overlay {
+    position: fixed !important;
+    z-index: 999999 !important;
+}
+
+.site-main,
+.site-footer {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* animated background stays behind everything */
+#abs-motion-layer {
+    z-index: 1 !important;
+}
+
+body::before {
+    z-index: 0 !important;
+}
+
+body::after {
+    z-index: 0 !important;
+}

@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+.folder-form-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px 16px 50px;
+}
+
+.folder-form-box {
+    background: #0b1220;
+    border: 1px solid #17243a;
+    border-radius: 18px;
+    padding: 22px;
+}
+
+.folder-form-box h1 {
+    margin: 0 0 8px;
+    font-size: 24px;
+}
+
+.folder-form-description {
+    margin: 0 0 25px;
+    color: #8f9aaa;
+    font-size: 13px;
+}
+
+.folder-field {
+    margin-bottom: 20px;
+}
+
+.folder-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #dbe4f1;
+}
+
+.folder-field input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.folder-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.folder-submit,
+.folder-cancel {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.folder-submit {
+    border: 1px solid #2467b8;
+    background: #124b91;
+    color: #fff;
+}
+
+.folder-cancel {
+    border: 1px solid #1b2a42;
+    background: #0e1727;
+    color: #cbd5e3;
+}
+
+.folder-error {
+    margin-top: 7px;
+    color: #e59aa5;
+    font-size: 12px;
+}
+
+.current-cover {
+    margin-top: 12px;
+}
+
+.current-cover p {
+    margin: 0 0 8px;
+    color: #8f9aaa;
+    font-size: 12px;
+}
+
+.current-cover img {
+    width: 100%;
+    max-height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #17243a;
+}
+
+@media (max-width: 600px) {
+
+    .folder-form-box {
+        padding: 18px;
+    }
+
+    .folder-form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<section class="folder-form-page">
+
+    <div class="folder-form-box">
+
+        <h1>{{ page_title }}</h1>
+
+        <p class="folder-form-description">
+            نام پوشه و در صورت نیاز کاور اختصاصی آن را تعیین کنید.
+        </p>
+
+        <form
+            method="post"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+            {% for field in form %}
+
+                <div class="folder-field">
+
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <div class="folder-error">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+            {% if folder and folder.custom_cover %}
+
+                <div class="current-cover">
+
+                    <p>کاور فعلی</p>
+
+                    <img
+                        src="{{ folder.custom_cover.url }}"
+                        alt="{{ folder.name }}"
+                    >
+
+                </div>
+
+            {% endif %}
+
+            <div class="folder-form-actions">
+
+                <button
+                    type="submit"
+                    class="folder-submit"
+                >
+                    {{ submit_text }}
+                </button>
+
+                <a
+                    href="{% url 'panel_folder_list' %}"
+                    class="folder-cancel"
+                >
+                    انصراف
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
+

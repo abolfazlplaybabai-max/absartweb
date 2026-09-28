@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}امنیت و تنظیمات | ABS ART{% endblock %}
+
+{% block content %}
+
+<section style="max-width:700px;margin:auto;padding:24px 16px">
+
+<h1>امنیت و تنظیمات</h1>
+
+<p style="color:#8f9aaa">
+از این بخش می‌توانی رمزهای I’m ABS را تغییر بدهی.
+</p>
+
+{% if message %}
+
+<div style="
+margin:20px 0;
+padding:14px;
+border:1px solid #245ca8;
+background:#0b1b30;
+border-radius:12px;
+">
+
+{{ message }}
+
+</div>
+
+{% endif %}
+
+<form method="post">
+
+{% csrf_token %}
+
+{% for field in form %}
+
+<div style="margin:16px 0">
+
+<label style="display:block;margin-bottom:8px">
+{{ field.label }}
+</label>
+
+{{ field }}
+
+{% if field.errors %}
+
+<div style="color:#ff7373;margin-top:6px">
+{{ field.errors }}
+</div>
+
+{% endif %}
+
+</div>
+
+{% endfor %}
+
+<button
+type="submit"
+style="
+width:100%;
+padding:14px;
+border:0;
+border-radius:12px;
+background:#173f73;
+color:white;
+font-family:inherit;
+cursor:pointer;
+"
+>
+ذخیره تنظیمات امنیتی
+</button>
+
+</form>
+
+</section>
+
+{% endblock %}

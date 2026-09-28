@@ -1,0 +1,604 @@
+{% extends "base.html" %}
+
+{% block title %}
+جستجو | ABS ART
+{% endblock %}
+
+{% block meta_description %}
+جستجو در طرح‌ها و پوشه‌های ABS ART.
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .search-page {
+        width: min(1180px, 94vw);
+        margin: 0 auto;
+        padding: 30px 0 70px;
+    }
+
+    .search-head {
+        margin-bottom: 28px;
+    }
+
+    .search-title {
+        margin: 0 0 8px;
+        color: #ffffff;
+        font-size: clamp(26px, 5vw, 42px);
+        font-weight: 900;
+        letter-spacing: -0.5px;
+    }
+
+    .search-subtitle {
+        margin: 0;
+        color: rgba(255,255,255,.58);
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 34px;
+    }
+
+    .search-input-wrap {
+        position: relative;
+        flex: 1;
+    }
+
+    .search-input {
+        width: 100%;
+        height: 56px;
+        padding: 0 18px;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 16px;
+        outline: none;
+        background: rgba(7,16,28,.88);
+        color: #fff;
+        font-family: inherit;
+        font-size: 15px;
+        box-sizing: border-box;
+        transition:
+            border-color .2s ease,
+            background .2s ease,
+            box-shadow .2s ease;
+    }
+
+    .search-input::placeholder {
+        color: rgba(255,255,255,.36);
+    }
+
+    .search-input:focus {
+        border-color: rgba(255,255,255,.30);
+        background: rgba(7,16,28,.98);
+        box-shadow: 0 0 0 4px rgba(255,255,255,.035);
+    }
+
+    .search-submit {
+        flex: 0 0 120px;
+        height: 56px;
+        border: 0;
+        border-radius: 16px;
+        background: #ffffff;
+        color: #07101c;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 900;
+        cursor: pointer;
+        transition:
+            transform .18s ease,
+            opacity .18s ease;
+    }
+
+    .search-submit:hover {
+        transform: translateY(-1px);
+        opacity: .92;
+    }
+
+    .search-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .search-summary-title {
+        margin: 0;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .search-query {
+        color: rgba(255,255,255,.55);
+        font-size: 13px;
+    }
+
+    .search-section {
+        margin-top: 34px;
+    }
+
+    .search-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .search-section-title {
+        margin: 0;
+        color: #fff;
+        font-size: 19px;
+        font-weight: 850;
+    }
+
+    .search-count {
+        min-width: 28px;
+        height: 28px;
+        padding: 0 9px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: rgba(255,255,255,.08);
+        color: rgba(255,255,255,.72);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .works-results {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .work-result {
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 18px;
+        background: rgba(7,16,28,.78);
+        transition:
+            transform .2s ease,
+            border-color .2s ease,
+            background .2s ease;
+    }
+
+    .work-result:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255,255,255,.18);
+        background: rgba(7,16,28,.94);
+    }
+
+    .work-result-link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .work-result-image {
+        position: relative;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+        background: #09111d;
+    }
+
+    .work-result-image img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        transition: transform .35s ease;
+    }
+
+    .work-result:hover .work-result-image img {
+        transform: scale(1.025);
+    }
+
+    .new-badge {
+        position: absolute;
+        top: 11px;
+        right: 11px;
+        z-index: 2;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #fff;
+        color: #07101c;
+        font-size: 10px;
+        font-weight: 900;
+    }
+
+    .work-result-body {
+        padding: 15px;
+    }
+
+    .work-result-title {
+        margin: 0 0 7px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 850;
+        line-height: 1.65;
+    }
+
+    .work-result-description {
+        margin: 0;
+        color: rgba(255,255,255,.53);
+        font-size: 12px;
+        line-height: 1.85;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .work-result-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 12px;
+    }
+
+    .work-meta-item {
+        padding: 5px 8px;
+        border-radius: 8px;
+        background: rgba(255,255,255,.055);
+        color: rgba(255,255,255,.55);
+        font-size: 10px;
+    }
+
+    .folder-results {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .folder-result {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        min-width: 0;
+        padding: 16px;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 16px;
+        background: rgba(7,16,28,.78);
+        color: #fff;
+        text-decoration: none;
+        transition:
+            transform .2s ease,
+            border-color .2s ease,
+            background .2s ease;
+    }
+
+    .folder-result:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255,255,255,.18);
+        background: rgba(7,16,28,.94);
+    }
+
+    .folder-icon {
+        flex: 0 0 42px;
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        font-size: 19px;
+    }
+
+    .folder-result-text {
+        min-width: 0;
+    }
+
+    .folder-result-name {
+        margin: 0 0 3px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+        line-height: 1.6;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .folder-result-label {
+        color: rgba(255,255,255,.42);
+        font-size: 10px;
+    }
+
+    .empty-search {
+        padding: 55px 20px;
+        border: 1px dashed rgba(255,255,255,.11);
+        border-radius: 20px;
+        background: rgba(7,16,28,.42);
+        text-align: center;
+    }
+
+    .empty-search-icon {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255,255,255,.06);
+        color: rgba(255,255,255,.72);
+        font-size: 21px;
+    }
+
+    .empty-search-title {
+        margin: 0 0 7px;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 850;
+    }
+
+    .empty-search-text {
+        margin: 0;
+        color: rgba(255,255,255,.48);
+        font-size: 12px;
+        line-height: 1.9;
+    }
+
+    .search-divider {
+        height: 1px;
+        margin: 35px 0 0;
+        background: rgba(255,255,255,.06);
+    }
+
+    @media (max-width: 900px) {
+        .works-results {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .folder-results {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 620px) {
+        .search-page {
+            width: min(94vw, 520px);
+            padding-top: 22px;
+        }
+
+        .search-form {
+            flex-direction: column;
+        }
+
+        .search-submit {
+            flex: none;
+            width: 100%;
+        }
+
+        .works-results,
+        .folder-results {
+            grid-template-columns: 1fr;
+        }
+
+        .search-summary {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .search-section {
+            margin-top: 28px;
+        }
+    }
+</style>
+
+<section class="search-page">
+
+    <header class="search-head">
+        <h1 class="search-title">جستجو</h1>
+
+        <p class="search-subtitle">
+            در طرح‌ها، توضیحات، پوشه‌ها و اطلاعات مرتبط با آثار ABS ART جستجو کنید.
+        </p>
+    </header>
+
+    <form
+        class="search-form"
+        method="get"
+        action="{% url 'search' %}"
+        role="search"
+    >
+        <div class="search-input-wrap">
+            <input
+                class="search-input"
+                type="search"
+                name="q"
+                value="{{ query }}"
+                placeholder="نام طرح، پوشه، شخص یا موضوع..."
+                autocomplete="off"
+                aria-label="عبارت جستجو"
+                autofocus
+            >
+        </div>
+
+        <button class="search-submit" type="submit">
+            جستجو
+        </button>
+    </form>
+
+    {% if query %}
+
+        <div class="search-summary">
+            <h2 class="search-summary-title">
+                نتایج جستجو
+            </h2>
+
+            <div class="search-query">
+                عبارت:
+                «{{ query }}»
+            </div>
+        </div>
+
+        {% if folders %}
+            <section class="search-section">
+
+                <div class="search-section-head">
+                    <h2 class="search-section-title">
+                        پوشه‌ها
+                    </h2>
+
+                    <span class="search-count">
+                        {{ folders|length }}
+                    </span>
+                </div>
+
+                <div class="folder-results">
+
+                    {% for folder in folders %}
+                        <a
+                            class="folder-result"
+                            href="{% url 'folder_detail' folder.pk %}"
+                        >
+                            <div class="folder-icon" aria-hidden="true">
+                                ▣
+                            </div>
+
+                            <div class="folder-result-text">
+                                <h3 class="folder-result-name">
+                                    {{ folder.name }}
+                                </h3>
+
+                                <span class="folder-result-label">
+                                    مشاهده پوشه و طرح‌های آن
+                                </span>
+                            </div>
+                        </a>
+                    {% endfor %}
+
+                </div>
+            </section>
+        {% endif %}
+
+
+        {% if works %}
+            <section class="search-section">
+
+                <div class="search-section-head">
+                    <h2 class="search-section-title">
+                        طرح‌ها
+                    </h2>
+
+                    <span class="search-count">
+                        {{ works|length }}
+                    </span>
+                </div>
+
+                <div class="works-results">
+
+                    {% for work in works %}
+                        <article class="work-result">
+
+                            <a
+                                class="work-result-link"
+                                href="{% url 'work_detail' work.pk %}"
+                            >
+
+                                <div class="work-result-image">
+
+                                    {% if work.is_new %}
+                                        <span class="new-badge">
+                                            NEW
+                                        </span>
+                                    {% endif %}
+
+                                    <img
+                                        src="{{ work.image.url }}"
+                                        alt="{{ work.title }}"
+                                        loading="lazy"
+                                    >
+                                </div>
+
+                                <div class="work-result-body">
+
+                                    <h3 class="work-result-title">
+                                        {{ work.title }}
+                                    </h3>
+
+                                    {% if work.description %}
+                                        <p class="work-result-description">
+                                            {{ work.description }}
+                                        </p>
+                                    {% endif %}
+
+                                    <div class="work-result-meta">
+
+                                        {% if work.folder %}
+                                            <span class="work-meta-item">
+                                                {{ work.folder.name }}
+                                            </span>
+                                        {% endif %}
+
+                                        {% if work.for_whom %}
+                                            <span class="work-meta-item">
+                                                {{ work.for_whom }}
+                                            </span>
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </a>
+
+                        </article>
+                    {% endfor %}
+
+                </div>
+            </section>
+        {% endif %}
+
+
+        {% if not folders and not works %}
+            <div class="empty-search">
+
+                <div class="empty-search-icon" aria-hidden="true">
+                    ⌕
+                </div>
+
+                <h2 class="empty-search-title">
+                    نتیجه‌ای پیدا نشد
+                </h2>
+
+                <p class="empty-search-text">
+                    برای «{{ query }}» طرح یا پوشه‌ای پیدا نشد.
+                    عبارت دیگری را امتحان کنید.
+                </p>
+
+            </div>
+        {% endif %}
+
+    {% else %}
+
+        <div class="empty-search">
+
+            <div class="empty-search-icon" aria-hidden="true">
+                ⌕
+            </div>
+
+            <h2 class="empty-search-title">
+                جستجو در ABS ART
+            </h2>
+
+            <p class="empty-search-text">
+                عبارت موردنظر خود را وارد کنید تا بین طرح‌ها و پوشه‌ها جستجو شود.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

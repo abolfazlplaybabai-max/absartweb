@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+
+{% block title %}
+پوشه طرح‌ها | ABS ART
+{% endblock %}
+
+{% block meta_description %}
+پوشه‌ها و دسته‌بندی آثار گرافیکی ABS ART.
+{% endblock %}
+
+{% block content %}
+
+<style>
+    .folders-page {
+        width: min(1220px, 94vw);
+        margin: 0 auto;
+        padding: 28px 0 70px;
+    }
+
+    .folders-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 25px;
+        padding: 22px 0 30px;
+    }
+
+    .folders-head-main {
+        min-width: 0;
+    }
+
+    .folders-title {
+        margin: 0;
+        color: #fff;
+        font-size: clamp(30px, 5vw, 48px);
+        line-height: 1.2;
+        font-weight: 900;
+        letter-spacing: -.5px;
+    }
+
+    .folders-subtitle {
+        margin: 10px 0 0;
+        color: rgba(255,255,255,.52);
+        font-size: 13px;
+        line-height: 1.9;
+    }
+
+    .folders-count {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        height: 34px;
+        padding: 0 12px;
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 999px;
+        background: rgba(255,255,255,.045);
+        color: rgba(255,255,255,.72);
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .folders-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .folder-card {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 18px;
+        background: rgba(7,16,28,.82);
+        color: inherit;
+        text-decoration: none;
+        transition:
+            transform .22s ease,
+            border-color .22s ease,
+            background .22s ease,
+            box-shadow .22s ease;
+    }
+
+    .folder-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255,255,255,.18);
+        background: rgba(7,16,28,.96);
+        box-shadow: 0 14px 35px rgba(0,0,0,.20);
+    }
+
+    .folder-cover {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        background: #080e17;
+    }
+
+    .folder-cover img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        transition: transform .35s ease;
+    }
+
+    .folder-card:hover .folder-cover img {
+        transform: scale(1.025);
+    }
+
+    .cover-overlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(0,0,0,.04),
+                transparent 45%,
+                rgba(0,0,0,.28)
+            );
+    }
+
+    .cover-empty {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,.16);
+        font-family: Arial, sans-serif;
+        font-size: clamp(32px, 5vw, 58px);
+        font-weight: 900;
+        letter-spacing: 2px;
+    }
+
+    .folder-info {
+        padding: 16px 17px 18px;
+    }
+
+    .folder-title {
+        margin: 0;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 850;
+        line-height: 1.65;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .folder-meta {
+        margin-top: 7px;
+        color: rgba(255,255,255,.48);
+        font-size: 11px;
+        line-height: 1.85;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .folder-label {
+        display: inline-flex;
+        align-items: center;
+        min-height: 24px;
+        margin-top: 11px;
+        padding: 0 8px;
+        border-radius: 7px;
+        background: rgba(255,255,255,.055);
+        color: rgba(255,255,255,.54);
+        font-size: 10px;
+    }
+
+    .empty {
+        padding: 70px 22px;
+        border: 1px dashed rgba(255,255,255,.10);
+        border-radius: 20px;
+        background: rgba(7,16,28,.42);
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 52px;
+        height: 52px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255,255,255,.06);
+        color: rgba(255,255,255,.70);
+        font-size: 20px;
+    }
+
+    .empty-title {
+        margin: 0 0 7px;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 850;
+    }
+
+    .empty-text {
+        margin: 0;
+        color: rgba(255,255,255,.44);
+        font-size: 12px;
+        line-height: 1.9;
+    }
+
+    @media (max-width: 680px) {
+        .folders-page {
+            width: 94vw;
+            padding-top: 18px;
+        }
+
+        .folders-head {
+            align-items: flex-start;
+            padding: 16px 0 24px;
+        }
+
+        .folders-title {
+            font-size: 30px;
+        }
+
+        .folders-subtitle {
+            font-size: 12px;
+        }
+
+        .folders-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .folder-card {
+            border-radius: 15px;
+        }
+
+        .folder-info {
+            padding: 13px 14px 15px;
+        }
+
+        .folder-title {
+            font-size: 16px;
+        }
+    }
+</style>
+
+<section class="folders-page">
+
+    <header class="folders-head">
+
+        <div class="folders-head-main">
+            <h1 class="folders-title">
+                پوشه طرح‌ها
+            </h1>
+
+            <p class="folders-subtitle">
+                دسته‌بندی آثار منتشرشده در ABS ART
+            </p>
+        </div>
+
+        {% if folder_data %}
+            <span class="folders-count">
+                {{ folder_data|length }}
+            </span>
+        {% endif %}
+
+    </header>
+
+
+    {% if folder_data %}
+
+        <section class="folders-grid">
+
+            {% for item in folder_data %}
+
+                <a
+                    href="{% url 'folder_detail' item.folder.pk %}"
+                    class="folder-card"
+                    aria-label="مشاهده پوشه {{ item.folder.name }}"
+                >
+
+                    <div class="folder-cover">
+
+                        {% if item.folder.custom_cover %}
+
+                            <img
+                                src="{{ item.folder.custom_cover.url }}"
+                                alt="{{ item.folder.name }}"
+                                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                            >
+
+                        {% elif item.latest_work %}
+
+                            <img
+                                src="{{ item.latest_work.image.url }}"
+                                alt="{{ item.folder.name }}"
+                                loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                            >
+
+                        {% else %}
+
+                            <div class="cover-empty">
+                                ABS
+                            </div>
+
+                        {% endif %}
+
+                        <span
+                            class="cover-overlay"
+                            aria-hidden="true"
+                        ></span>
+
+                    </div>
+
+
+                    <div class="folder-info">
+
+                        <h2 class="folder-title">
+                            {{ item.folder.name }}
+                        </h2>
+
+
+                        {% if item.latest_work %}
+
+                            <div class="folder-meta">
+                                آخرین طرح:
+                                {{ item.latest_work.title }}
+                            </div>
+
+                        {% else %}
+
+                            <div class="folder-meta">
+                                هنوز طرحی در این پوشه منتشر نشده است.
+                            </div>
+
+                        {% endif %}
+
+
+                        <span class="folder-label">
+                            مشاهده پوشه
+                        </span>
+
+                    </div>
+
+                </a>
+
+            {% endfor %}
+
+        </section>
+
+    {% else %}
+
+        <div class="empty">
+
+            <div class="empty-icon" aria-hidden="true">
+                ▫
+            </div>
+
+            <h2 class="empty-title">
+                هنوز هیچ پوشه‌ای ایجاد نشده است
+            </h2>
+
+            <p class="empty-text">
+                پوشه‌ها پس از ایجاد از پنل مدیریت در این بخش نمایش داده می‌شوند.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

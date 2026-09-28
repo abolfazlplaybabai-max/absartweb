@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}صفحه پیدا نشد | ABS ART{% endblock %}
+
+{% block content %}
+<style>
+.abs-error-page {
+    min-height: calc(100vh - 112px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 18px;
+    text-align: center;
+}
+
+.abs-error-box {
+    width: min(620px, 100%);
+    padding: 42px 28px;
+    border: 1px solid #17243a;
+    border-radius: 18px;
+    background: rgba(7, 16, 28, .86);
+    box-shadow: 0 20px 60px rgba(0,0,0,.28);
+}
+
+.abs-error-code {
+    direction: ltr;
+    font-family: Arial, sans-serif;
+    font-size: clamp(58px, 15vw, 110px);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: 8px;
+    color: #dce5f2;
+    margin-bottom: 18px;
+}
+
+.abs-error-box h1 {
+    margin: 0 0 12px;
+    font-size: 22px;
+    color: #fff;
+}
+
+.abs-error-box p {
+    margin: 0 auto 26px;
+    max-width: 460px;
+    color: #91a0b4;
+    line-height: 2;
+    font-size: 14px;
+}
+
+.abs-error-home {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: #0d1929;
+    border: 1px solid #1a2b44;
+    color: #fff;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.abs-error-home:hover {
+    background: #14243a;
+    border-color: #29476e;
+}
+
+@media (max-width: 600px) {
+    .abs-error-page {
+        padding: 25px 14px;
+    }
+
+    .abs-error-box {
+        padding: 34px 20px;
+    }
+
+    .abs-error-box h1 {
+        font-size: 19px;
+    }
+}
+</style>
+
+<section class="abs-error-page">
+    <div class="abs-error-box">
+        <div class="abs-error-code">404</div>
+        <h1>صفحه پیدا نشد</h1>
+        <p>
+            صفحه‌ای که به دنبال آن هستید وجود ندارد یا ممکن است
+            آدرس آن تغییر کرده باشد.
+        </p>
+        <a class="abs-error-home" href="{% url 'home' %}">
+            بازگشت به خانه
+        </a>
+    </div>
+</section>
+{% endblock %}

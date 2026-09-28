@@ -1,0 +1,175 @@
+{% extends "core/base.html" %}
+
+{% block title %}I'm ABS | ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+
+.im-abs-page {
+    min-height: calc(100vh - 112px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 16px;
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(0, 71, 171, .20),
+            transparent 45%
+        ),
+        #03070d;
+}
+
+.im-abs-box {
+    width: min(430px, 100%);
+    padding: 30px 24px;
+    border: 1px solid #102642;
+    border-radius: 18px;
+    background: rgba(5, 13, 24, .92);
+    box-shadow:
+        0 0 45px rgba(0, 71, 171, .14);
+}
+
+.im-abs-title {
+    margin: 0 0 8px;
+    text-align: center;
+    font-size: 25px;
+    letter-spacing: 2px;
+}
+
+.im-abs-subtitle {
+    margin: 0 0 28px;
+    text-align: center;
+    color: #71839a;
+    font-size: 12px;
+}
+
+.im-abs-field {
+    margin-bottom: 16px;
+}
+
+.im-abs-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #b8c6d8;
+    font-size: 13px;
+}
+
+.im-abs-field input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid #1a2d47;
+    border-radius: 10px;
+    outline: none;
+    background: #07111f;
+    color: #fff;
+    font-size: 15px;
+}
+
+.im-abs-field input:focus {
+    border-color: #1769c2;
+    box-shadow: 0 0 0 3px rgba(23, 105, 194, .10);
+}
+
+.im-abs-submit {
+    width: 100%;
+    height: 48px;
+    border: 0;
+    border-radius: 10px;
+    background: #118b52;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.im-abs-error {
+    margin-bottom: 18px;
+    padding: 12px;
+    border-radius: 9px;
+    background: rgba(160, 20, 30, .15);
+    border: 1px solid rgba(200, 50, 60, .35);
+    color: #ff9da5;
+    text-align: center;
+    font-size: 13px;
+}
+
+</style>
+
+
+<section class="im-abs-page">
+
+    <div class="im-abs-box">
+
+        <h1 class="im-abs-title">
+            I'M ABS
+        </h1>
+
+        <p class="im-abs-subtitle">
+            دسترسی محافظت‌شده ABS ART
+        </p>
+
+
+        {% if error %}
+
+            <div class="im-abs-error">
+                {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="im-abs-field">
+
+                <label for="password_1">
+                    رمز عبور
+                </label>
+
+                <input
+                    id="password_1"
+                    name="password_1"
+                    type="password"
+                    autocomplete="off"
+                    required
+                >
+
+            </div>
+
+
+            <div class="im-abs-field">
+
+                <label for="password_2">
+                    رمز عبور جایگزین
+                </label>
+
+                <input
+                    id="password_2"
+                    name="password_2"
+                    type="password"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="im-abs-submit"
+            >
+                تأیید
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
+

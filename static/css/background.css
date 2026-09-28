@@ -1,0 +1,279 @@
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    overflow-x: hidden;
+    background: #03070e !important;
+}
+
+/* پایه‌ی تاریک */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 15% 25%,
+            rgba(0, 71, 171, 0.16),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 85% 70%,
+            rgba(0, 92, 210, 0.13),
+            transparent 40%
+        ),
+        linear-gradient(
+            135deg,
+            #02050a 0%,
+            #06101d 50%,
+            #02070f 100%
+        );
+}
+
+/* =========================================================
+   لایه‌ی اصلی حرکت
+   ========================================================= */
+
+#abs-motion-layer {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+/* هاله‌های متحرک */
+
+.abs-motion-orb {
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0, 106, 255, 0.16) 0%,
+            rgba(0, 78, 180, 0.09) 28%,
+            rgba(0, 50, 130, 0.035) 52%,
+            transparent 72%
+        );
+
+    filter: blur(28px);
+
+    will-change: transform;
+
+    opacity: 0.8;
+}
+
+/* حرکت اول */
+.abs-motion-orb.orb-1 {
+    left: -80px;
+    top: 8%;
+
+    animation:
+        absOrbOne 22s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+/* حرکت دوم */
+.abs-motion-orb.orb-2 {
+    right: -100px;
+    top: 42%;
+
+    width: 340px;
+    height: 340px;
+
+    opacity: 0.62;
+
+    animation:
+        absOrbTwo 27s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+/* حرکت سوم */
+.abs-motion-orb.orb-3 {
+    left: 30%;
+    bottom: -150px;
+
+    width: 300px;
+    height: 300px;
+
+    opacity: 0.52;
+
+    animation:
+        absOrbThree 30s
+        ease-in-out
+        infinite
+        alternate;
+}
+
+/* =========================================================
+   نورهای خیلی محو کوچک
+   ========================================================= */
+
+.abs-motion-glow {
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: rgba(100, 170, 255, 0.65);
+
+    box-shadow:
+        0 0 14px rgba(0, 106, 255, 0.45),
+        0 0 35px rgba(0, 106, 255, 0.18);
+
+    filter: blur(1px);
+
+    opacity: 0.25;
+
+    animation:
+        absGlowMove var(--duration)
+        ease-in-out
+        infinite
+        alternate;
+}
+
+/* =========================================================
+   انیمیشن‌ها
+   ========================================================= */
+
+@keyframes absOrbOne {
+    0% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(0.9);
+    }
+
+    50% {
+        transform:
+            translate3d(18vw, 12vh, 0)
+            scale(1.08);
+    }
+
+    100% {
+        transform:
+            translate3d(8vw, 30vh, 0)
+            scale(0.96);
+    }
+}
+
+@keyframes absOrbTwo {
+    0% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(-15vw, -12vh, 0)
+            scale(1.12);
+    }
+
+    100% {
+        transform:
+            translate3d(-5vw, 10vh, 0)
+            scale(0.92);
+    }
+}
+
+@keyframes absOrbThree {
+    0% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(0.9);
+    }
+
+    50% {
+        transform:
+            translate3d(12vw, -15vh, 0)
+            scale(1.12);
+    }
+
+    100% {
+        transform:
+            translate3d(-18vw, -5vh, 0)
+            scale(0.98);
+    }
+}
+
+@keyframes absGlowMove {
+    0% {
+        transform:
+            translate3d(0, 0, 0);
+        opacity: 0.12;
+    }
+
+    50% {
+        opacity: 0.42;
+    }
+
+    100% {
+        transform:
+            translate3d(
+                var(--move-x),
+                var(--move-y),
+                0
+            );
+        opacity: 0.18;
+    }
+}
+
+/* محتوا روی انیمیشن */
+.site-header,
+.site-main,
+.site-footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* موبایل */
+@media (max-width: 700px) {
+
+    .abs-motion-orb {
+        width: 210px;
+        height: 210px;
+
+        filter: blur(24px);
+    }
+
+    .abs-motion-orb.orb-2 {
+        width: 240px;
+        height: 240px;
+    }
+
+    .abs-motion-orb.orb-3 {
+        width: 220px;
+        height: 220px;
+    }
+}
+
+/* اگر کاربر Reduce Motion فعال کرده باشد */
+@media (prefers-reduced-motion: reduce) {
+    .abs-motion-orb,
+    .abs-motion-glow {
+        animation: none !important;
+    }
+}

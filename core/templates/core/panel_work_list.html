@@ -1,0 +1,496 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت طرح‌ها | ABS ART{% endblock %}
+
+{% block content %}
+
+<style>
+.panel-page{
+    max-width:1150px;
+    margin:0 auto;
+}
+
+.panel-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    margin-bottom:22px;
+}
+
+.panel-top h1{
+    margin:0;
+    font-size:25px;
+}
+
+.add-button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:11px 18px;
+    border-radius:9px;
+    background:#0047ab;
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+}
+
+.filters{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 180px 180px auto;
+    gap:10px;
+    margin-bottom:14px;
+}
+
+.search-input,
+.status-select{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 13px;
+    border:1px solid #223247;
+    border-radius:9px;
+    background:#0a111a;
+    color:#fff;
+    font-family:inherit;
+    outline:none;
+}
+
+.search-input:focus,
+.status-select:focus{
+    border-color:#2869bd;
+}
+
+.filter-button{
+    border:0;
+    border-radius:9px;
+    padding:12px 18px;
+    background:#162638;
+    color:#fff;
+    font-family:inherit;
+    cursor:pointer;
+}
+
+.status-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:22px;
+}
+
+.status-link{
+    display:inline-block;
+    padding:8px 13px;
+    border:1px solid #1c2b3d;
+    border-radius:20px;
+    background:#0b131e;
+    color:#aebbc9;
+    text-decoration:none;
+    font-size:12px;
+}
+
+.status-link.active{
+    background:#0047ab;
+    border-color:#0047ab;
+    color:#fff;
+}
+
+.work-admin-list{
+    display:grid;
+    gap:12px;
+}
+
+.work-admin-card{
+    display:grid;
+    grid-template-columns:135px minmax(0,1fr) auto;
+    gap:17px;
+    align-items:center;
+    padding:14px;
+    background:#0a1119;
+    border:1px solid #182638;
+    border-radius:13px;
+}
+
+.work-admin-image{
+    width:135px;
+    max-height:135px;
+    aspect-ratio:1 / 1;
+    object-fit:contain;
+    border-radius:9px;
+    background:#05080d;
+    display:block;
+}
+
+.work-admin-info{
+    min-width:0;
+}
+
+.work-admin-info h2{
+    margin:0 0 9px;
+    font-size:17px;
+    overflow-wrap:anywhere;
+}
+
+.work-meta{
+    color:#8f9baa;
+    font-size:12px;
+    line-height:2;
+}
+
+.badge{
+    display:inline-block;
+    padding:3px 8px;
+    border-radius:12px;
+    font-size:11px;
+    margin-right:4px;
+}
+
+.badge-active{
+    background:#123d25;
+    color:#72e39b;
+}
+
+.badge-draft{
+    background:#403617;
+    color:#f1d77b;
+}
+
+.badge-inactive{
+    background:#302c2c;
+    color:#b9b1b1;
+}
+
+.badge-trash{
+    background:#421d1d;
+    color:#ef8989;
+}
+
+.badge-showcase{
+    background:#172f50;
+    color:#8ebfff;
+}
+
+.admin-actions{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    min-width:105px;
+}
+
+.action-button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:36px;
+    padding:7px 10px;
+    border-radius:8px;
+    text-align:center;
+    text-decoration:none;
+    border:0;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:12px;
+    box-sizing:border-box;
+}
+
+.edit-button{
+    background:#173b69;
+    color:#fff;
+}
+
+.trash-button{
+    background:#3b1c1c;
+    color:#ef9999;
+}
+
+.empty-state{
+    text-align:center;
+    padding:55px 20px;
+    background:#0a1119;
+    border:1px solid #182638;
+    border-radius:13px;
+    color:#8996a5;
+}
+
+.trash-form{
+    margin:0;
+}
+
+@media(max-width:760px){
+    .panel-top{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .add-button{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+    .filters{
+        grid-template-columns:1fr;
+    }
+
+    .work-admin-card{
+        grid-template-columns:85px minmax(0,1fr);
+    }
+
+    .work-admin-image{
+        width:85px;
+        max-height:85px;
+    }
+
+    .admin-actions{
+        grid-column:1 / -1;
+        flex-direction:row;
+        min-width:0;
+    }
+
+    .action-button{
+        flex:1;
+    }
+}
+
+@media(max-width:430px){
+    .work-admin-card{
+        grid-template-columns:70px minmax(0,1fr);
+        gap:11px;
+        padding:11px;
+    }
+
+    .work-admin-image{
+        width:70px;
+        max-height:70px;
+    }
+
+    .work-admin-info h2{
+        font-size:15px;
+    }
+
+    .work-meta{
+        font-size:11px;
+    }
+}
+</style>
+
+<div class="panel-page">
+
+    <div class="panel-top">
+        <h1>مدیریت طرح‌ها</h1>
+
+        <a href="{% url 'panel_work_create' %}" class="add-button">
+            + افزودن طرح جدید
+        </a>
+    </div>
+
+    <form method="get" class="filters">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ search }}"
+            class="search-input"
+            placeholder="جستجو در عنوان، توضیحات، مخاطب یا پوشه..."
+        >
+
+        <select name="status" class="status-select">
+            <option value="">همه وضعیت‌ها</option>
+
+            <option value="active" {% if status == "active" %}selected{% endif %}>
+                فعال
+            </option>
+
+            <option value="draft" {% if status == "draft" %}selected{% endif %}>
+                پیش‌نویس
+            </option>
+
+            <option value="inactive" {% if status == "inactive" %}selected{% endif %}>
+                غیرفعال
+            </option>
+
+            <option value="trash" {% if status == "trash" %}selected{% endif %}>
+                سطل بازیابی
+            </option>
+        </select>
+
+        <select name="sort" class="status-select">
+
+            <option value="-published_at" {% if sort == "-published_at" %}selected{% endif %}>
+                جدیدترین انتشار
+            </option>
+
+            <option value="published_at" {% if sort == "published_at" %}selected{% endif %}>
+                قدیمی‌ترین انتشار
+            </option>
+
+            <option value="-updated_at" {% if sort == "-updated_at" %}selected{% endif %}>
+                آخرین ویرایش
+            </option>
+
+            <option value="updated_at" {% if sort == "updated_at" %}selected{% endif %}>
+                قدیمی‌ترین ویرایش
+            </option>
+
+            <option value="title" {% if sort == "title" %}selected{% endif %}>
+                عنوان: الف تا ی
+            </option>
+
+            <option value="-title" {% if sort == "-title" %}selected{% endif %}>
+                عنوان: ی تا الف
+            </option>
+
+        </select>
+
+        <button type="submit" class="filter-button">
+            جستجو و فیلتر
+        </button>
+
+    </form>
+
+    <div class="status-row">
+
+        <a
+            href="{% url 'panel_work_list' %}"
+            class="status-link {% if not status %}active{% endif %}"
+        >
+            همه
+        </a>
+
+        <a
+            href="?status=active"
+            class="status-link {% if status == 'active' %}active{% endif %}"
+        >
+            فعال
+        </a>
+
+        <a
+            href="?status=draft"
+            class="status-link {% if status == 'draft' %}active{% endif %}"
+        >
+            پیش‌نویس
+        </a>
+
+        <a
+            href="?status=inactive"
+            class="status-link {% if status == 'inactive' %}active{% endif %}"
+        >
+            غیرفعال
+        </a>
+
+        <a
+            href="?status=trash"
+            class="status-link {% if status == 'trash' %}active{% endif %}"
+        >
+            سطل بازیابی
+        </a>
+
+    </div>
+
+    {% if works %}
+
+        <div class="work-admin-list">
+
+            {% for work in works %}
+
+                <div class="work-admin-card">
+
+                    {% if work.image %}
+                        <img
+                            src="{{ work.image.url }}"
+                            alt="{{ work.title }}"
+                            class="work-admin-image"
+                        >
+                    {% endif %}
+
+                    <div class="work-admin-info">
+
+                        <h2>{{ work.title }}</h2>
+
+                        <div class="work-meta">
+
+                            وضعیت:
+
+                            {% if work.status == "active" %}
+                                <span class="badge badge-active">فعال</span>
+                            {% elif work.status == "draft" %}
+                                <span class="badge badge-draft">پیش‌نویس</span>
+                            {% elif work.status == "inactive" %}
+                                <span class="badge badge-inactive">غیرفعال</span>
+                            {% elif work.status == "trash" %}
+                                <span class="badge badge-trash">سطل بازیابی</span>
+                            {% endif %}
+
+                            <br>
+
+                            پوشه:
+                            {% if work.folder %}
+                                {{ work.folder.name }}
+                            {% else %}
+                                بدون پوشه
+                            {% endif %}
+
+                            <br>
+
+                            انتشار:
+                            {{ work.published_at|date:"Y/m/d - H:i" }}
+
+                            <br>
+
+                            {% if work.is_showcase %}
+                                <span class="badge badge-showcase">
+                                    ویترین منتخب
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="admin-actions">
+
+                        <a
+                            href="{% url 'panel_work_edit' work.pk %}"
+                            class="action-button edit-button"
+                        >
+                            ویرایش
+                        </a>
+
+                        {% if work.status != "trash" %}
+
+                            <form
+                                method="post"
+                                action="{% url 'panel_work_trash' work.pk %}"
+                                class="trash-form"
+                                onsubmit="return confirm('این طرح به سطل بازیابی منتقل شود؟');"
+                            >
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="action-button trash-button"
+                                >
+                                    انتقال به سطل
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            هیچ طرحی با این مشخصات پیدا نشد.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

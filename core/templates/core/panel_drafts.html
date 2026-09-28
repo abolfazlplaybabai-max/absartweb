@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}پیش‌نویس‌ها | مدیریت ABS ART{% endblock %}
+
+{% block meta_description %}
+مدیریت و بررسی پیش‌نویس‌های ABS ART.
+{% endblock %}
+
+{% block content %}
+
+<style>
+.drafts-page{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 16px 60px;
+}
+
+.drafts-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:18px;
+    margin-bottom:24px;
+}
+
+.drafts-title{
+    margin:0;
+    font-size:clamp(24px,4vw,36px);
+    font-weight:900;
+}
+
+.drafts-subtitle{
+    margin:8px 0 0;
+    color:#91a0b5;
+    font-size:14px;
+}
+
+.drafts-count{
+    min-width:70px;
+    text-align:center;
+    padding:10px 14px;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:14px;
+    background:rgba(255,255,255,.04);
+    font-weight:800;
+}
+
+.drafts-list{
+    display:grid;
+    gap:14px;
+}
+
+.draft-card{
+    display:grid;
+    grid-template-columns:150px minmax(0,1fr) auto;
+    gap:18px;
+    align-items:center;
+    padding:14px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:18px;
+    background:rgba(7,16,28,.82);
+}
+
+.draft-image{
+    width:150px;
+    aspect-ratio:1/1;
+    overflow:hidden;
+    border-radius:13px;
+    background:#0a111b;
+}
+
+.draft-image img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+}
+
+.draft-info{
+    min-width:0;
+}
+
+.draft-title{
+    margin:0 0 8px;
+    font-size:19px;
+    font-weight:900;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.draft-description{
+    margin:0 0 12px;
+    color:#9aa8bb;
+    line-height:1.8;
+    font-size:13px;
+}
+
+.draft-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+}
+
+.draft-meta span{
+    display:inline-flex;
+    align-items:center;
+    padding:6px 9px;
+    border-radius:9px;
+    background:rgba(255,255,255,.05);
+    color:#aeb9c9;
+    font-size:12px;
+}
+
+.draft-status{
+    color:#ffd166 !important;
+    border:1px solid rgba(255,209,102,.20);
+}
+
+.draft-actions{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-width:125px;
+}
+
+.draft-actions a{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    padding:9px 12px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:800;
+}
+
+.draft-edit{
+    background:#0047ab;
+    color:#fff;
+}
+
+.draft-preview{
+    background:rgba(255,255,255,.06);
+    color:#dce5f1;
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.drafts-empty{
+    padding:60px 20px;
+    text-align:center;
+    border:1px dashed rgba(255,255,255,.12);
+    border-radius:20px;
+    background:rgba(255,255,255,.025);
+}
+
+.drafts-empty strong{
+    display:block;
+    margin-bottom:8px;
+    font-size:19px;
+}
+
+.drafts-empty span{
+    color:#8795a8;
+    font-size:13px;
+}
+
+@media(max-width:760px){
+    .drafts-head{
+        align-items:flex-start;
+    }
+
+    .draft-card{
+        grid-template-columns:100px minmax(0,1fr);
+        gap:13px;
+    }
+
+    .draft-image{
+        width:100px;
+    }
+
+    .draft-actions{
+        grid-column:1 / -1;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+@media(max-width:480px){
+    .drafts-page{
+        padding-left:12px;
+        padding-right:12px;
+    }
+
+    .draft-card{
+        grid-template-columns:82px minmax(0,1fr);
+        padding:10px;
+    }
+
+    .draft-image{
+        width:82px;
+    }
+
+    .draft-title{
+        font-size:16px;
+    }
+
+    .draft-description{
+        display:none;
+    }
+}
+</style>
+
+<section class="drafts-page">
+
+    <header class="drafts-head">
+        <div>
+            <h1 class="drafts-title">پیش‌نویس‌ها</h1>
+            <p class="drafts-subtitle">
+                طرح‌هایی که هنوز برای انتشار عمومی آماده یا فعال نشده‌اند.
+            </p>
+        </div>
+
+        <div class="drafts-count">
+            {{ works|length }} طرح
+        </div>
+    </header>
+
+    {% if works %}
+
+        <div class="drafts-list">
+
+            {% for work in works %}
+
+                <article class="draft-card">
+
+                    <div class="draft-image">
+                        {% if work.image %}
+                            <img
+                                src="{{ work.image.url }}"
+                                alt="{{ work.title }}"
+                                loading="lazy"
+                            >
+                        {% endif %}
+                    </div>
+
+                    <div class="draft-info">
+
+                        <h2 class="draft-title">
+                            {{ work.title }}
+                        </h2>
+
+                        {% if work.description %}
+                            <p class="draft-description">
+                                {{ work.description|truncatechars:180 }}
+                            </p>
+                        {% endif %}
+
+                        <div class="draft-meta">
+
+                            <span class="draft-status">
+                                پیش‌نویس
+                            </span>
+
+                            {% if work.folder %}
+                                <span>
+                                    پوشه: {{ work.folder.name }}
+                                </span>
+                            {% else %}
+                                <span>
+                                    بدون پوشه
+                                </span>
+                            {% endif %}
+
+                            <span>
+                                تاریخ:
+                                {{ work.published_at|date:"Y/m/d" }}
+                            </span>
+
+                            {% if work.for_whom %}
+                                <span>
+                                    برای: {{ work.for_whom }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="draft-actions">
+
+                        <a
+                            class="draft-edit"
+                            href="{% url 'panel_work_edit' work.pk %}"
+                        >
+                            ویرایش طرح
+                        </a>
+
+                        <a
+                            class="draft-preview"
+                            href="{% url 'panel_work_preview' work.pk %}"
+                        >
+                            پیش‌نمایش
+                        </a>
+
+                    </div>
+
+                </article>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="drafts-empty">
+            <strong>هیچ پیش‌نویسی وجود ندارد</strong>
+            <span>
+                در حال حاضر هیچ طرحی با وضعیت پیش‌نویس ثبت نشده است.
+            </span>
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
